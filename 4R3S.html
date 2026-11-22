@@ -364,19 +364,6 @@
       background: var(--accent-hover);
     }
 
-    .btn-secondary {
-      width: 100%;
-      background: var(--surface-2);
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 0.88rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 8px;
-    }
-
     .debug-box {
       margin-top: 18px;
       background: var(--surface);
@@ -605,7 +592,7 @@
     <h1>Progetta il tuo Body Kit. Trasforma la visione in un componente reale.</h1>
     <p>4R3S nasce per trasformare lo studio estetico e aerodinamico in progetti concreti. Iniziamo con Alfa Romeo Giulia con una struttura progettata per accogliere in futuro nuovi brand e modelli.</p>
     <div class="vision-card">
-      <strong>Obiettivo e Riconoscimento del Contest:</strong> il miglior creatore che riceverà più voti dalla community vedrà realizzato il body kit a suo titolo, ricevendo una quota concordata sui compensi derivanti dal progetto. L'utilizzo del servizio avviene tramite <strong>3 token gratuiti iniziali</strong> e successivo <strong>acquisto di pacchetti token</strong>, senza alcun abbonamento ricorrente.
+      <strong>Obiettivo e Riconoscimento del Contest:</strong> il miglior creatore che riceverà più voti dalla community vedrà realizzato il body kit a suo titolo, ricevendo una quota concordata sui compensi derivanti dal progetto. L'utilizzo del servizio avviene tramite <strong>3 token gratuiti iniziali</strong> e successivo <strong>acquisto di pacchetti token</strong>.
     </div>
   </section>
 
@@ -686,7 +673,7 @@
         </li>
         <li>
           <strong>3. Specifica del componente e sistema a Token</strong>
-          Descrivi il componente da realizzare (o usa i tag rapidi) e avvia la generazione. Ogni generazione consuma <strong>1 Token</strong>. Ricevi <strong>3 Token gratuiti</strong> all'inizio e, quando ti servono altre generazioni, puoi acquistare solo pacchetti di token aggiuntivi.
+          Descrivi il componente da realizzare (o usa i tag rapidi) e avvia la generazione. Ogni generazione consuma <strong>1 Token</strong>. Ricevi <strong>3 Token gratuiti</strong> all'inizio e, quando ti servono altre generazioni, puoi acquistare pacchetti di token aggiuntivi.
         </li>
         <li>
           <strong>4. Revisione, Profilo e Votazioni</strong>
@@ -704,7 +691,7 @@
         <button class="close-btn" data-close="tokensModal">&times;</button>
       </div>
       <p style="font-size:0.84rem;color:var(--muted);">
-        Su 4R3S non ci sono abbonamenti: acquisti solo i token che desideri utilizzare per generare e rifinire le tue proposte.
+        Su 4R3S acquisti solo i pacchetti di token che desideri utilizzare per generare e rifinire le tue proposte.
       </p>
       <div class="pack-grid">
         <div class="pack-card">
@@ -779,7 +766,7 @@
 
         <div class="rule-item">
           <h3>4. Token, Privacy e Cookie</h3>
-          <p>Il servizio funziona tramite token gratuiti iniziali e acquisto di pacchetti token (senza abbonamenti). I token consumati per la generazione AI non sono rimborsabili. I dati di registrazione sono trattati nel rispetto della normativa privacy vigente e dei cookie tecnici necessari.</p>
+          <p>Il servizio funziona tramite token gratuiti iniziali e acquisto di pacchetti token. I token consumati per la generazione AI non sono rimborsabili. I dati di registrazione sono trattati nel rispetto della normativa privacy vigente e dei cookie tecnici necessari.</p>
         </div>
       </div>
 
@@ -1002,7 +989,6 @@
       saveHistory();
     }
 
-    // Touch: 2 dita per zoom + spostamento libero, 1 dito per disegnare/cancellare
     wrapper.addEventListener("touchstart", (e) => {
       e.preventDefault();
       if (e.touches.length === 2) {
@@ -1055,7 +1041,6 @@
       if (e.touches.length === 0) endStroke();
     });
 
-    // Mouse: tasto destro / centrale / Shift per spostare quando ingrandito, tasto sinistro per disegnare
     wrapper.addEventListener("contextmenu", (e) => e.preventDefault());
 
     wrapper.addEventListener("mousedown", (e) => {
