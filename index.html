@@ -2,7 +2,1075 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /><!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Biscione Lab — Piattaforma Design & Contest Body Kit Giulia & Stelvio</title>
+  <style>
+    :root {
+      --bg: #090a0d;
+      --surface: #12151b;
+      --surface-2: #191d26;
+      --accent: #e11d48;
+      --accent-hover: #be123c;
+      --text: #f5f7fa;
+      --muted: #9aa3b2;
+      --border: #252b38;
+      --ok: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      background: rgba(9, 10, 13, 0.92);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      font-weight: 800;
+      font-size: 1.02rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .brand span {
+      color: var(--accent);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .token-badge {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .token-badge strong {
+      color: var(--accent);
+    }
+
+    .btn-ghost {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 11px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-ghost:hover {
+      border-color: #3d4659;
+    }
+
+    .btn-account {
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* MANIFESTO HERO */
+    .hero {
+      padding: 32px 18px 22px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .pill {
+      display: inline-block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #fda4af;
+      background: rgba(225, 29, 72, 0.14);
+      border: 1px solid rgba(225, 29, 72, 0.35);
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .hero h1 {
+      font-size: 1.72rem;
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 0.94rem;
+      margin-bottom: 16px;
+    }
+
+    .vision-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 0.86rem;
+      color: #e5e7eb;
+    }
+
+    .vision-card strong {
+      color: #fff;
+    }
+
+    /* STUDIO CONTAINER */
+    .studio {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 8px 16px 36px;
+    }
+
+    .step-label {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .car-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .car-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 11px 10px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.86rem;
+      cursor: pointer;
+    }
+
+    .car-btn.active {
+      border-color: var(--accent);
+      background: rgba(225, 29, 72, 0.14);
+    }
+
+    /* CANVAS AREA */
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      touch-action: none;
+      margin-bottom: 10px;
+    }
+
+    #viewport {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform-origin: 0 0;
+      will-change: transform;
+    }
+
+    #baseCanvas, #maskCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    #maskCanvas {
+      opacity: 0.62;
+    }
+
+    .zoom-indicator {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(9, 10, 13, 0.78);
+      color: #fff;
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 4px 9px;
+      border-radius: 6px;
+      pointer-events: none;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .hint-bar {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    /* TOOLBAR */
+    .toolbar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+
+    .tool-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .tool-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 9px 6px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tool-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .slider-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+    }
+
+    /* PROMPT & GENERAZIONE */
+    .prompt-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .tag-chip {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: #d1d5db;
+      font-size: 0.75rem;
+      padding: 5px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 10px;
+      font-size: 0.9rem;
+      resize: none;
+      height: 76px;
+      margin-bottom: 12px;
+      font-family: inherit;
+    }
+
+    textarea:focus, input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .debug-box {
+      margin-top: 18px;
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      display: none;
+    }
+
+    .debug-box p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .debug-box img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    /* MODALI (GUIDA TECNICA & REGISTRAZIONE) */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.76);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 540px;
+      max-height: 88vh;
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-header h2 {
+      font-size: 1.08rem;
+      font-weight: 800;
+    }
+
+    .close-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .guide-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.86rem;
+      color: #d1d5db;
+    }
+
+    .guide-list li {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .guide-list strong {
+      color: #fff;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #d1d5db;
+      margin-bottom: 5px;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    .status-msg {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: var(--ok);
+      display: none;
+    }
+
+    /* FOOTER COMPLETO CON REGOLE DEL SITO */
+    footer {
+      border-top: 1px solid var(--border);
+      background: #0c0e13;
+      padding: 32px 18px 44px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .footer-inner {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .footer-top {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .footer-top strong {
+      color: var(--text);
+      font-size: 0.95rem;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    @media (min-width: 600px) {
+      .rules-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .rule-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .rule-item h3 {
+      color: var(--text);
+      font-size: 0.86rem;
+      margin-bottom: 5px;
+    }
+
+    .footer-bottom {
+      font-size: 0.76rem;
+      color: #7b8494;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">BISCIONE<span>LAB</span></div>
+    <div class="header-actions">
+      <div class="token-badge">Token: <strong id="tokenCount">3</strong></div>
+      <button class="btn-ghost" id="openGuideBtn">Guida Tecnica</button>
+      <button class="btn-account" id="openAuthBtn">Registrati</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="pill">Progetto Indipendente • Alfa Romeo Giulia &amp; Stelvio</div>
+    <h1>Progetta il tuo Body Kit. Trasforma la visione in un componente reale.</h1>
+    <p>Una piattaforma dedicata agli appassionati di Giulia e Stelvio per studiare linee, proporzioni e dettagli aerodinamici su base fotografica ad alta definizione con supporto AI.</p>
+    <div class="vision-card">
+      <strong>Obiettivo e Riconoscimento del Contest:</strong> il progetto più votato dalla community verrà candidato alla fase di sviluppo e realizzazione a titolo del suo creatore, con riconoscimento di una quota concordata sui compensi derivanti dal progetto stesso.
+    </div>
+  </section>
+
+  <main class="studio">
+    <div class="step-label">
+      <span>Seleziona Modello &amp; Inquadratura</span>
+    </div>
+    <div class="car-selector">
+      <button class="car-btn active" data-car="giulia_front">Giulia — Frontale 3/4</button>
+      <button class="car-btn" data-car="stelvio_front">Stelvio — Frontale 3/4</button>
+      <button class="car-btn" data-car="giulia_rear">Giulia — Posteriore</button>
+      <button class="car-btn" data-car="stelvio_rear">Stelvio — Posteriore</button>
+    </div>
+
+    <div class="step-label">
+      <span>Area di Progettazione e Maschera</span>
+      <button id="resetZoomBtn" style="background:none;border:none;color:#fda4af;font-size:0.78rem;font-weight:700;cursor:pointer;">Ripristina Zoom</button>
+    </div>
+
+    <div class="canvas-wrapper" id="canvasWrapper">
+      <div id="viewport">
+        <canvas id="baseCanvas"></canvas>
+        <canvas id="maskCanvas"></canvas>
+      </div>
+      <div class="zoom-indicator" id="zoomBadge">Zoom: 1.0x</div>
+    </div>
+    <div class="hint-bar">2 dita: zoom (fino a 5x) e scorrimento • 1 dito: traccia o cancella la maschera</div>
+
+    <div class="toolbar">
+      <div class="tool-row">
+        <button class="tool-btn active" id="brushBtn">Pennello</button>
+        <button class="tool-btn" id="eraserBtn">Gomma</button>
+        <button class="tool-btn" id="undoBtn">Annulla</button>
+        <button class="tool-btn" id="clearBtn">Pulisci</button>
+      </div>
+      <div class="slider-row">
+        <span>Spessore tratto:</span>
+        <input type="range" id="brushSize" min="4" max="60" value="20" />
+        <span id="brushSizeVal">20px</span>
+      </div>
+    </div>
+
+    <div class="step-label">
+      <span>Specifiche Estetiche del Componente</span>
+    </div>
+    <div class="prompt-box">
+      <div class="tags">
+        <span class="tag-chip" data-text="splitter anteriore basso in fibra di carbonio con profili laterali">+ Splitter Carbonio</span>
+        <span class="tag-chip" data-text="minigonne laterali profilate nero lucido ad alta precisione">+ Minigonne</span>
+        <span class="tag-chip" data-text="estrattore posteriore sportivo con canali aerodinamici">+ Estrattore</span>
+        <span class="tag-chip" data-text="spoiler posteriore lip integrato in carbonio">+ Spoiler Lip</span>
+      </div>
+      <textarea id="promptInput" placeholder="Descrivi stile, materiali e proporzioni del componente da generare nell'area evidenziata..."></textarea>
+      <button class="btn-primary" id="generateBtn">Genera Proposta (1 Token)</button>
+    </div>
+
+    <div class="debug-box" id="debugBox">
+      <p><strong>Verifica maschera tecnica:</strong> immagine binaria generata dalle tue pennellate per delimitare l'intervento dell'AI.</p>
+      <img id="maskPreviewImg" alt="Anteprima maschera tecnica" />
+    </div>
+  </main>
+
+  <!-- MODALE GUIDA TECNICA -->
+  <div class="modal-backdrop" id="guideModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Guida Tecnica all'Utilizzo</h2>
+        <button class="close-btn" data-close="guideModal">&times;</button>
+      </div>
+      <ul class="guide-list">
+        <li>
+          <strong>1. Ingrandimento e navigazione (2 dita su smartphone / rotella su PC)</strong>
+          Ingrandisci fino a 5x sui dettagli della carrozzeria (paraurti, minigonne, estrattore, spoiler) e sposta l'inquadratura senza lasciare segni. Usa "Ripristina Zoom" per tornare alla vista intera.
+        </li>
+        <li>
+          <strong>2. Tracciamento della maschera con Pennello, Gomma e Annulla</strong>
+          Usa il <strong>Pennello</strong> per evidenziare l'area esatta in cui vuoi far lavorare l'AI. Se esci dai bordi, seleziona la <strong>Gomma</strong> oppure premi <strong>Annulla</strong> per tornare indietro di un tratto, o <strong>Pulisci</strong> per ricominciare.
+        </li>
+        <li>
+          <strong>3. Specifica del componente e consumo Token</strong>
+          Inserisci una descrizione chiara del risultato desiderato (o usa i tag rapidi) e avvia la generazione. Ogni generazione consuma <strong>1 Token</strong>: all'iscrizione ricevi <strong>3 Token gratuiti</strong>, poi potrai acquistare pacchetti aggiuntivi o un abbonamento.
+        </li>
+        <li>
+          <strong>4. Revisione, Pubblicazione sul Profilo e Votazioni</strong>
+          Una volta ottenuto il design che ti convince, potrai inviarlo al tuo profilo e alla revisione prima della pubblicazione nella galleria del contest. Ogni utente potrà votare i progetti altrui (non è consentito votare il proprio).
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- MODALE REGISTRAZIONE / ACCESSO -->
+  <div class="modal-backdrop" id="authModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Registrati o Accedi al tuo Profilo</h2>
+        <button class="close-btn" data-close="authModal">&times;</button>
+      </div>
+      <p style="font-size:0.84rem;color:var(--muted);margin-bottom:14px;">
+        Crea il tuo account per gestire i tuoi token, salvare i body kit sul profilo personale e partecipare alle votazioni del contest.
+      </p>
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="regNickname">Nickname / Nome Creatore</label>
+          <input type="text" id="regNickname" placeholder="Es. Marco_QV94" required />
+        </div>
+        <div class="form-group">
+          <label for="regEmail">Indirizzo Email</label>
+          <input type="email" id="regEmail" placeholder="nome@esempio.it" required />
+        </div>
+        <div class="form-group">
+          <label for="regPassword">Password (min. 8 caratteri)</label>
+          <input type="password" id="regPassword" minlength="8" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn-primary">Crea Account e Attiva 3 Token</button>
+        <div class="status-msg" id="authStatus"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FOOTER CON REGOLE DEL SITO -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <strong>Biscione Lab — Regolamento Generale e Condizioni del Sito</strong>
+        <span>Piattaforma indipendente dedicata al concept design automobilistico per Alfa Romeo Giulia e Stelvio.</span>
+      </div>
+
+      <div class="rules-grid">
+        <div class="rule-item">
+          <h3>1. Indipendenza e Marchi</h3>
+          <p>Il sito è un progetto indipendente e non è affiliato, sponsorizzato o approvato da Stellantis N.V. o Alfa Romeo. I riferimenti ai modelli indicano esclusivamente la compatibilità estetica dei concept.</p>
+        </div>
+
+        <div class="rule-item">
+          <h3>2. Regole del Contest e Votazioni</h3>
+          <p>Ogni proposta inviata è soggetta a verifica preliminare prima della pubblicazione. È vietato l'autovoto, l'uso di account multipli o comportamenti manipolativi. Il progetto primo classificato accede alla valutazione di sviluppo a titolo del creatore con una quota concordata sui compensi.</p>
+        </div>
+
+        <div class="rule-item">
+          <h3>3. Diritti sui Design e Uso Stradale</h3>
+          <p>Partecipando, l'utente dichiara che il concept non lede diritti di terzi e concede alla piattaforma il diritto di pubblicare e valutare il progetto. I componenti aftermarket eventualmente realizzati sono destinati a uso pista, raduni o esposizione ove previsto dalle normative vigenti.</p>
+        </div>
+
+        <div class="rule-item">
+          <h3>4. Token, Privacy e Cookie</h3>
+          <p>I token utilizzati per la generazione AI non sono rimborsabili una volta consumati. I dati di registrazione e le preferenze tecniche sono trattati nel rispetto della normativa privacy vigente e dei soli cookie tecnici necessari al funzionamento del servizio.</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        &copy; <span id="yearNow">2026</span> Biscione Lab. Tutti i diritti riservati. Le condizioni complete del contest e l'informativa privacy saranno rese disponibili in forma estesa al momento dell'apertura ufficiale delle iscrizioni.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("yearNow").textContent = new Date().getFullYear();
+
+    const CAR_IMAGES = {
+      giulia_front: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1600&q=90",
+      stelvio_front: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1600&q=90",
+      giulia_rear: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=1600&q=90",
+      stelvio_rear: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1600&q=90"
+    };
+
+    const wrapper = document.getElementById("canvasWrapper");
+    const viewport = document.getElementById("viewport");
+    const baseCanvas = document.getElementById("baseCanvas");
+    const maskCanvas = document.getElementById("maskCanvas");
+    const baseCtx = baseCanvas.getContext("2d");
+    const maskCtx = maskCanvas.getContext("2d");
+
+    const zoomBadge = document.getElementById("zoomBadge");
+    const brushBtn = document.getElementById("brushBtn");
+    const eraserBtn = document.getElementById("eraserBtn");
+    const undoBtn = document.getElementById("undoBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const resetZoomBtn = document.getElementById("resetZoomBtn");
+    const brushSizeInput = document.getElementById("brushSize");
+    const brushSizeVal = document.getElementById("brushSizeVal");
+    const promptInput = document.getElementById("promptInput");
+    const generateBtn = document.getElementById("generateBtn");
+
+    const INTERNAL_W = 1600;
+    const INTERNAL_H = 1000;
+    baseCanvas.width = INTERNAL_W;
+    baseCanvas.height = INTERNAL_H;
+    maskCanvas.width = INTERNAL_W;
+    maskCanvas.height = INTERNAL_H;
+
+    let mode = "brush";
+    let brushSize = 20;
+    let isDrawing = false;
+    let historyStack = [];
+    let tokens = 3;
+    let currentUser = null;
+
+    let scale = 1;
+    let translateX = 0;
+    let translateY = 0;
+    let isPinching = false;
+    let initialPinchDist = 0;
+    let initialScale = 1;
+    let lastPanCenter = { x: 0, y: 0 };
+
+    // Gestione Modali (Guida Tecnica & Registrazione)
+    function openModal(id) {
+      document.getElementById(id).classList.add("open");
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("open");
+    }
+
+    document.getElementById("openGuideBtn").addEventListener("click", () => openModal("guideModal"));
+    document.getElementById("openAuthBtn").addEventListener("click", () => openModal("authModal"));
+
+    document.querySelectorAll("[data-close]").forEach((btn) => {
+      btn.addEventListener("click", () => closeModal(btn.dataset.close));
+    });
+
+    document.querySelectorAll(".modal-backdrop").forEach((backdrop) => {
+      backdrop.addEventListener("click", (e) => {
+        if (e.target === backdrop) backdrop.classList.remove("open");
+      });
+    });
+
+    document.getElementById("registerForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const nick = document.getElementById("regNickname").value.trim();
+      const email = document.getElementById("regEmail").value.trim();
+      currentUser = { nick, email };
+      tokens = 3;
+      document.getElementById("tokenCount").textContent = tokens;
+      document.getElementById("openAuthBtn").textContent = nick;
+      const status = document.getElementById("authStatus");
+      status.style.display = "block";
+      status.textContent = `Profilo "${nick}" registrato con 3 token attivi. (Collegamento database Supabase previsto nello Step 3).`;
+    });
+
+    function updateTransform() {
+      const rect = wrapper.getBoundingClientRect();
+      const maxTx = 0;
+      const minTx = rect.width * (1 - scale);
+      const maxTy = 0;
+      const minTy = rect.height * (1 - scale);
+
+      translateX = Math.min(maxTx, Math.max(minTx, translateX));
+      translateY = Math.min(maxTy, Math.max(minTy, translateY));
+
+      viewport.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      zoomBadge.textContent = `Zoom: ${scale.toFixed(1)}x`;
+    }
+
+    function saveHistory() {
+      if (historyStack.length > 15) historyStack.shift();
+      historyStack.push(maskCanvas.toDataURL());
+    }
+
+    function loadCarImage(key) {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        baseCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+        const ratio = Math.max(INTERNAL_W / img.width, INTERNAL_H / img.height);
+        const w = img.width * ratio;
+        const h = img.height * ratio;
+        const x = (INTERNAL_W - w) / 2;
+        const y = (INTERNAL_H - h) / 2;
+        baseCtx.drawImage(img, x, y, w, h);
+
+        maskCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+        historyStack = [];
+        saveHistory();
+        resetZoom();
+      };
+      img.src = CAR_IMAGES[key];
+    }
+
+    function resetZoom() {
+      scale = 1;
+      translateX = 0;
+      translateY = 0;
+      updateTransform();
+    }
+
+    function getCanvasCoords(clientX, clientY) {
+      const rect = wrapper.getBoundingClientRect();
+      const relX = (clientX - rect.left - translateX) / scale;
+      const relY = (clientY - rect.top - translateY) / scale;
+      return {
+        x: (relX / rect.width) * INTERNAL_W,
+        y: (relY / rect.height) * INTERNAL_H
+      };
+    }
+
+    function startStroke(x, y) {
+      isDrawing = true;
+      maskCtx.lineCap = "round";
+      maskCtx.lineJoin = "round";
+      maskCtx.lineWidth = (brushSize * 2.2) / Math.sqrt(scale);
+
+      if (mode === "brush") {
+        maskCtx.globalCompositeOperation = "source-over";
+        maskCtx.strokeStyle = "#ff0055";
+      } else {
+        maskCtx.globalCompositeOperation = "destination-out";
+        maskCtx.strokeStyle = "rgba(0,0,0,1)";
+      }
+
+      maskCtx.beginPath();
+      maskCtx.moveTo(x, y);
+      maskCtx.lineTo(x + 0.1, y + 0.1);
+      maskCtx.stroke();
+    }
+
+    function moveStroke(x, y) {
+      if (!isDrawing) return;
+      maskCtx.lineTo(x, y);
+      maskCtx.stroke();
+    }
+
+    function endStroke() {
+      if (!isDrawing) return;
+      isDrawing = false;
+      maskCtx.closePath();
+      saveHistory();
+    }
+
+    wrapper.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      if (e.touches.length === 2) {
+        isDrawing = false;
+        isPinching = true;
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialPinchDist = Math.hypot(dx, dy);
+        initialScale = scale;
+        lastPanCenter = {
+          x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+          y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+        };
+      } else if (e.touches.length === 1 && !isPinching) {
+        const pos = getCanvasCoords(e.touches[0].clientX, e.touches[0].clientY);
+        startStroke(pos.x, pos.y);
+      }
+    }, { passive: false });
+
+    wrapper.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      if (e.touches.length === 2 && isPinching) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        const newScale = Math.min(5, Math.max(1, initialScale * (dist / initialPinchDist)));
+
+        const center = {
+          x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+          y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+        };
+
+        const rect = wrapper.getBoundingClientRect();
+        const originX = center.x - rect.left;
+        const originY = center.y - rect.top;
+
+        translateX = originX - ((originX - translateX) * (newScale / scale)) + (center.x - lastPanCenter.x);
+        translateY = originY - ((originY - translateY) * (newScale / scale)) + (center.y - lastPanCenter.y);
+        scale = newScale;
+        lastPanCenter = center;
+        updateTransform();
+      } else if (e.touches.length === 1 && isDrawing && !isPinching) {
+        const pos = getCanvasCoords(e.touches[0].clientX, e.touches[0].clientY);
+        moveStroke(pos.x, pos.y);
+      }
+    }, { passive: false });
+
+    wrapper.addEventListener("touchend", (e) => {
+      if (e.touches.length < 2) isPinching = false;
+      if (e.touches.length === 0) endStroke();
+    });
+
+    wrapper.addEventListener("mousedown", (e) => {
+      const pos = getCanvasCoords(e.clientX, e.clientY);
+      startStroke(pos.x, pos.y);
+    });
+    window.addEventListener("mousemove", (e) => {
+      if (!isDrawing) return;
+      const pos = getCanvasCoords(e.clientX, e.clientY);
+      moveStroke(pos.x, pos.y);
+    });
+    window.addEventListener("mouseup", endStroke);
+
+    wrapper.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const rect = wrapper.getBoundingClientRect();
+      const originX = e.clientX - rect.left;
+      const originY = e.clientY - rect.top;
+      const factor = e.deltaY < 0 ? 1.15 : 0.85;
+      const newScale = Math.min(5, Math.max(1, scale * factor));
+      translateX = originX - ((originX - translateX) * (newScale / scale));
+      translateY = originY - ((originY - translateY) * (newScale / scale));
+      scale = newScale;
+      updateTransform();
+    }, { passive: false });
+
+    brushBtn.addEventListener("click", () => {
+      mode = "brush";
+      brushBtn.classList.add("active");
+      eraserBtn.classList.remove("active");
+    });
+
+    eraserBtn.addEventListener("click", () => {
+      mode = "eraser";
+      eraserBtn.classList.add("active");
+      brushBtn.classList.remove("active");
+    });
+
+    undoBtn.addEventListener("click", () => {
+      if (historyStack.length <= 1) return;
+      historyStack.pop();
+      const prev = new Image();
+      prev.onload = () => {
+        maskCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+        maskCtx.globalCompositeOperation = "source-over";
+        maskCtx.drawImage(prev, 0, 0);
+      };
+      prev.src = historyStack[historyStack.length - 1];
+    });
+
+    clearBtn.addEventListener("click", () => {
+      maskCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+      saveHistory();
+    });
+
+    resetZoomBtn.addEventListener("click", resetZoom);
+
+    brushSizeInput.addEventListener("input", (e) => {
+      brushSize = Number(e.target.value);
+      brushSizeVal.textContent = `${brushSize}px`;
+    });
+
+    document.querySelectorAll(".car-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".car-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        loadCarImage(btn.dataset.car);
+      });
+    });
+
+    document.querySelectorAll(".tag-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const current = promptInput.value.trim();
+        promptInput.value = current ? `${current}, ${chip.dataset.text}` : chip.dataset.text;
+      });
+    });
+
+    function exportBinaryMask() {
+      const exportCanvas = document.createElement("canvas");
+      exportCanvas.width = INTERNAL_W;
+      exportCanvas.height = INTERNAL_H;
+      const ctx = exportCanvas.getContext("2d");
+
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, INTERNAL_W, INTERNAL_H);
+
+      const srcData = maskCtx.getImageData(0, 0, INTERNAL_W, INTERNAL_H);
+      const outData = ctx.getImageData(0, 0, INTERNAL_W, INTERNAL_H);
+
+      for (let i = 0; i < srcData.data.length; i += 4) {
+        if (srcData.data[i + 3] > 20) {
+          outData.data[i] = 255;
+          outData.data[i + 1] = 255;
+          outData.data[i + 2] = 255;
+          outData.data[i + 3] = 255;
+        }
+      }
+      ctx.putImageData(outData, 0, 0);
+      return exportCanvas.toDataURL("image/png");
+    }
+
+    generateBtn.addEventListener("click", () => {
+      if (tokens <= 0) {
+        alert("Token esauriti. Nella fase successiva potrai acquistare nuovi pacchetti token o attivare l'abbonamento.");
+        return;
+      }
+      if (!promptInput.value.trim()) {
+        alert("Inserisci o seleziona una descrizione del componente prima di generare.");
+        return;
+      }
+
+      tokens -= 1;
+      document.getElementById("tokenCount").textContent = tokens;
+
+      const binaryMask = exportBinaryMask();
+      document.getElementById("maskPreviewImg").src = binaryMask;
+      document.getElementById("debugBox").style.display = "block";
+      document.getElementById("debugBox").scrollIntoView({ behavior: "smooth" });
+    });
+
+    loadCarImage("giulia_front");
+  </script>
+</body>
+</html>
   <title>Biscione Lab — Design & Contest Body Kit Giulia & Stelvio</title>
   <style>
     :root {
