@@ -164,6 +164,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
     }
 
     .view-selector {
@@ -212,7 +213,7 @@
       will-change: transform;
     }
 
-    #baseCanvas, #maskCanvas {
+    #baseCanvas, #maskCanvas, #overlayCanvas {
       position: absolute;
       top: 0;
       left: 0;
@@ -223,6 +224,10 @@
 
     #maskCanvas {
       opacity: 0.62;
+    }
+
+    #overlayCanvas {
+      pointer-events: none;
     }
 
     .zoom-indicator {
@@ -246,6 +251,7 @@
       margin-bottom: 14px;
     }
 
+    /* TOOLBAR */
     .toolbar {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -255,6 +261,13 @@
     }
 
     .tool-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .tool-row-secondary {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 6px;
@@ -267,7 +280,7 @@
       color: var(--text);
       padding: 9px 6px;
       border-radius: 8px;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 600;
       cursor: pointer;
     }
@@ -276,6 +289,11 @@
       background: var(--accent);
       border-color: var(--accent);
       color: #fff;
+    }
+
+    .tool-btn.finish-line {
+      border-color: var(--ok);
+      color: #6ee7b7;
     }
 
     .slider-row {
@@ -630,22 +648,31 @@
       <div id="viewport">
         <canvas id="baseCanvas"></canvas>
         <canvas id="maskCanvas"></canvas>
+        <canvas id="overlayCanvas"></canvas>
       </div>
       <div class="zoom-indicator" id="zoomBadge">Zoom: 1.0x</div>
     </div>
-    <div class="hint-bar">2 dita: zoom (fino a 6x) e spostamento libero • 1 dito: traccia o cancella la maschera</div>
+    <div class="hint-bar" id="modeHint">2 dita: zoom (fino a 6x) e spostamento • Tocca/clicca per aggiungere punti (doppio tocco per chiudere linea)</div>
 
     <div class="toolbar">
       <div class="tool-row">
-        <button class="tool-btn active" id="brushBtn">Pennello</button>
-        <button class="tool-btn" id="eraserBtn">Gomma</button>
+        <button class="tool-btn active" data-mode="polyline">Linea Punti</button>
+        <button class="tool-btn" data-mode="smart_line">Smart Linea</button>
+        <button class="tool-btn" data-mode="edit_points">Modifica Punti</button>
+      </div>
+      <div class="tool-row-secondary">
+        <button class="tool-btn" data-mode="freehand">Mano Libera</button>
+        <button class="tool-btn" data-mode="eraser">Gomma</button>
+        <button class="tool-btn finish-line" id="finishPolylineBtn">Chiudi Linea</button>
         <button class="tool-btn" id="undoBtn">Annulla</button>
-        <button class="tool-btn" id="clearBtn">Pulisci</button>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+        <button class="tool-btn" id="clearBtn" style="padding:5px 10px;font-size:0.74rem;">Pulisci Tutto</button>
       </div>
       <div class="slider-row">
         <span>Spessore tratto:</span>
-        <input type="range" id="brushSize" min="3" max="60" value="18" />
-        <span id="brushSizeVal">18px</span>
+        <input type="range" id="brushSize" min="3" max="60" value="16" />
+        <span id="brushSizeVal">16px</span>
       </div>
     </div>
 
@@ -682,16 +709,20 @@
       </div>
       <ul class="guide-list">
         <li>
-          <strong>1. Ingrandimento e posizionamento libero</strong>
-          Ingrandisci fino a 6x sulle zone della Giulia e sposta l'immagine con due dita (o rotella + tasto destro/Shift su PC).
+          <strong>1. Linea Punti (da punto a punto)</strong>
+          Tocca o clicca lungo il bordo desiderato per collegare i punti. Fai doppio clic/tocco o premi "Chiudi Linea" per terminare il tratto.
         </li>
         <li>
-          <strong>2. Tracciamento della maschera</strong>
-          Usa Pennello, Gomma, Annulla o Pulisci per delimitare la zona del body kit.
+          <strong>2. Smart Linea (stile Anteprima macOS)</strong>
+          Traccia una linea a mano libera: se è sufficientemente dritta, viene convertita automaticamente in un segmento dritto con punti regolabili.
         </li>
         <li>
-          <strong>3. Sistema a Token</strong>
-          Ogni generazione consuma 1 Token (3 gratuiti iniziali, poi pacchetti token).
+          <strong>3. Modifica Punti e Spessore tratto</strong>
+          Seleziona "Modifica Punti" per trascinare qualsiasi punto di collegamento e usa lo slider "Spessore tratto" per allargare o stringere la linea creata.
+        </li>
+        <li>
+          <strong>4. Mano Libera e Gomma per i dettagli</strong>
+          Usa "Mano Libera" per aggiungere particolari curvi o sfumature e "Gomma" per ripulire le zone in eccesso.
         </li>
       </ul>
     </div>
@@ -748,7 +779,7 @@
     <div class="footer-inner">
       <div class="footer-top">
         <strong>4R3S — Regolamento Generale e Condizioni del Sito</strong>
-        <span>Piattaforma indipendente dedicata al concept design automobilistico.</span>
+        <span>Piattaforma indipendente dedicata al concept design automobilistico, con avvio su Alfa Romeo Giulia e predisposizione per altri brand.</span>
       </div>
       <div class="rules-grid">
         <div class="rule-item">
@@ -788,12 +819,15 @@
     const viewport = document.getElementById("viewport");
     const baseCanvas = document.getElementById("baseCanvas");
     const maskCanvas = document.getElementById("maskCanvas");
+    const overlayCanvas = document.getElementById("overlayCanvas");
+
     const baseCtx = baseCanvas.getContext("2d");
     const maskCtx = maskCanvas.getContext("2d");
+    const overlayCtx = overlayCanvas.getContext("2d");
 
     const zoomBadge = document.getElementById("zoomBadge");
-    const brushBtn = document.getElementById("brushBtn");
-    const eraserBtn = document.getElementById("eraserBtn");
+    const modeHint = document.getElementById("modeHint");
+    const finishPolylineBtn = document.getElementById("finishPolylineBtn");
     const undoBtn = document.getElementById("undoBtn");
     const clearBtn = document.getElementById("clearBtn");
     const resetZoomBtn = document.getElementById("resetZoomBtn");
@@ -808,20 +842,34 @@
 
     const INTERNAL_W = 1600;
     const INTERNAL_H = 1000;
-    baseCanvas.width = INTERNAL_W;
-    baseCanvas.height = INTERNAL_H;
-    maskCanvas.width = INTERNAL_W;
-    maskCanvas.height = INTERNAL_H;
+    baseCanvas.width = maskCanvas.width = overlayCanvas.width = INTERNAL_W;
+    baseCanvas.height = maskCanvas.height = overlayCanvas.height = INTERNAL_H;
 
+    // Modi: 'polyline' | 'smart_line' | 'edit_points' | 'freehand' | 'eraser'
+    let toolMode = "polyline";
+    let brushSize = 16;
     let currentViewLabel = "Fronte Angolare Anteriore";
-    let mode = "brush";
-    let brushSize = 18;
-    let isDrawing = false;
-    let isPanningMouse = false;
-    let lastMousePan = { x: 0, y: 0 };
-    let historyStack = [];
     let tokens = 3;
 
+    // Elementi vettoriali modificabili (linee / polilinee / segmenti smart)
+    // Ogni elemento: { points: [{x, y}, ...], width: number, closed: boolean }
+    let vectorShapes = [];
+    let activePolylinePoints = [];
+    let selectedShapeIdx = null;
+    let draggedNode = null; // { shapeIdx, pointIdx }
+
+    // Tracciamento mano libera / smart line / gomma
+    let isDrawingFree = false;
+    let freePath = [];
+    let isPanningMouse = false;
+    let lastMousePan = { x: 0, y: 0 };
+    let lastTapTime = 0;
+
+    // Undo stack (snapshot di vectorShapes + raster freehand/eraser)
+    let undoStack = [];
+    let rasterSnapshot = null;
+
+    // Zoom & Pan
     let scale = 1;
     let translateX = 0;
     let translateY = 0;
@@ -830,13 +878,8 @@
     let initialScale = 1;
     let lastPanCenter = { x: 0, y: 0 };
 
-    function openModal(id) {
-      document.getElementById(id).classList.add("open");
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).classList.remove("open");
-    }
+    function openModal(id) { document.getElementById(id).classList.add("open"); }
+    function closeModal(id) { document.getElementById(id).classList.remove("open"); }
 
     document.getElementById("openGuideBtn").addEventListener("click", () => openModal("guideModal"));
     document.getElementById("openAuthBtn").addEventListener("click", () => openModal("authModal"));
@@ -875,6 +918,203 @@
       status.textContent = `Profilo "${nick}" attivato.`;
     });
 
+    function setMode(newMode) {
+      if (toolMode === "polyline" && newMode !== "polyline" && activePolylinePoints.length >= 2) {
+        commitActivePolyline(false);
+      }
+      toolMode = newMode;
+      document.querySelectorAll(".tool-btn[data-mode]").forEach((b) => {
+        b.classList.toggle("active", b.dataset.mode === newMode);
+      });
+
+      const hints = {
+        polyline: "2 dita: zoom/sposta • Tocca/clicca per collegare punti • Doppio tocco o 'Chiudi Linea' per completare",
+        smart_line: "Traccia un tratto a mano libera: se è dritto diventa una linea retta con punti regolabili",
+        edit_points: "Trascina i punti rossi per spostare i collegamenti • Usa lo slider per regolare lo spessore",
+        freehand: "Disegna a mano libera per aggiungere dettagli o curve",
+        eraser: "Cancella le zone della maschera che non ti servono"
+      };
+      modeHint.textContent = hints[newMode] || "";
+      renderAll();
+    }
+
+    document.querySelectorAll(".tool-btn[data-mode]").forEach((btn) => {
+      btn.addEventListener("click", () => setMode(btn.dataset.mode));
+    });
+
+    function pushUndoState() {
+      if (undoStack.length > 25) undoStack.shift();
+      undoStack.push({
+        shapes: JSON.parse(JSON.stringify(vectorShapes)),
+        raster: maskCanvas.toDataURL()
+      });
+    }
+
+    function commitActivePolyline(closed = false) {
+      if (activePolylinePoints.length >= 2) {
+        pushUndoState();
+        vectorShapes.push({
+          points: activePolylinePoints.map((p) => ({ ...p })),
+          width: brushSize * 2.2,
+          closed
+        });
+        selectedShapeIdx = vectorShapes.length - 1;
+      }
+      activePolylinePoints = [];
+      renderAll();
+    }
+
+    finishPolylineBtn.addEventListener("click", () => {
+      if (activePolylinePoints.length >= 2) {
+        commitActivePolyline(false);
+      } else {
+        activePolylinePoints = [];
+        renderAll();
+      }
+    });
+
+    // Riconoscimento linea retta stile "Anteprima" macOS
+    function isStraightLine(pts) {
+      if (pts.length < 4) return false;
+      const start = pts[0];
+      const end = pts[pts.length - 1];
+      const chordLen = Math.hypot(end.x - start.x, end.y - start.y);
+      if (chordLen < 45) return false;
+
+      let maxDev = 0;
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
+
+      for (let i = 1; i < pts.length - 1; i++) {
+        const px = pts[i].x - start.x;
+        const py = pts[i].y - start.y;
+        const dist = Math.abs(dx * py - dy * px) / chordLen;
+        if (dist > maxDev) maxDev = dist;
+      }
+
+      // Se la deviazione massima rispetto alla corda è contenuta, è una linea retta
+      return maxDev / chordLen < 0.08 && maxDev < 28;
+    }
+
+    function renderMaskLayer() {
+      maskCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+      if (rasterSnapshot) {
+        maskCtx.globalCompositeOperation = "source-over";
+        maskCtx.drawImage(rasterSnapshot, 0, 0);
+      }
+
+      maskCtx.save();
+      maskCtx.globalCompositeOperation = "source-over";
+      maskCtx.strokeStyle = "#ff0055";
+      maskCtx.fillStyle = "#ff0055";
+      maskCtx.lineCap = "round";
+      maskCtx.lineJoin = "round";
+
+      for (const shape of vectorShapes) {
+        if (!shape.points || shape.points.length < 2) continue;
+        maskCtx.lineWidth = shape.width;
+        maskCtx.beginPath();
+        maskCtx.moveTo(shape.points[0].x, shape.points[0].y);
+        for (let i = 1; i < shape.points.length; i++) {
+          maskCtx.lineTo(shape.points[i].x, shape.points[i].y);
+        }
+        if (shape.closed) maskCtx.closePath();
+        maskCtx.stroke();
+      }
+
+      if (activePolylinePoints.length > 0) {
+        maskCtx.lineWidth = brushSize * 2.2;
+        maskCtx.beginPath();
+        maskCtx.moveTo(activePolylinePoints[0].x, activePolylinePoints[0].y);
+        for (let i = 1; i < activePolylinePoints.length; i++) {
+          maskCtx.lineTo(activePolylinePoints[i].x, activePolylinePoints[i].y);
+        }
+        maskCtx.stroke();
+      }
+
+      if (isDrawingFree && freePath.length > 1) {
+        maskCtx.lineWidth = brushSize * 2.2;
+        maskCtx.beginPath();
+        maskCtx.moveTo(freePath[0].x, freePath[0].y);
+        for (let i = 1; i < freePath.length; i++) {
+          maskCtx.lineTo(freePath[i].x, freePath[i].y);
+        }
+        maskCtx.stroke();
+      }
+
+      maskCtx.restore();
+    }
+
+    function renderOverlayHandles() {
+      overlayCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+      const showHandles = toolMode === "polyline" || toolMode === "smart_line" || toolMode === "edit_points";
+      if (!showHandles) return;
+
+      const nodeRadius = Math.max(10, 14 / Math.sqrt(scale));
+
+      // Nodi delle linee già create
+      vectorShapes.forEach((shape, sIdx) => {
+        const isSelected = sIdx === selectedShapeIdx;
+        shape.points.forEach((pt, pIdx) => {
+          overlayCtx.beginPath();
+          overlayCtx.arc(pt.x, pt.y, nodeRadius, 0, Math.PI * 2);
+          overlayCtx.fillStyle = isSelected ? "#ffffff" : "#fda4af";
+          overlayCtx.fill();
+          overlayCtx.lineWidth = 4;
+          overlayCtx.strokeStyle = "#e11d48";
+          overlayCtx.stroke();
+
+          if (toolMode === "edit_points" && pIdx === 0) {
+            overlayCtx.beginPath();
+            overlayCtx.arc(pt.x, pt.y, nodeRadius * 0.35, 0, Math.PI * 2);
+            overlayCtx.fillStyle = "#e11d48";
+            overlayCtx.fill();
+          }
+        });
+      });
+
+      // Nodi della polilinea attiva in corso
+      activePolylinePoints.forEach((pt) => {
+        overlayCtx.beginPath();
+        overlayCtx.arc(pt.x, pt.y, nodeRadius, 0, Math.PI * 2);
+        overlayCtx.fillStyle = "#10b981";
+        overlayCtx.fill();
+        overlayCtx.lineWidth = 3.5;
+        overlayCtx.strokeStyle = "#090a0d";
+        overlayCtx.stroke();
+      });
+    }
+
+    function renderAll() {
+      renderMaskLayer();
+      renderOverlayHandles();
+    }
+
+    function syncRasterSnapshot() {
+      const img = new Image();
+      img.onload = () => {
+        rasterSnapshot = img;
+        vectorShapes = [];
+        activePolylinePoints = [];
+        selectedShapeIdx = null;
+        renderAll();
+      };
+      img.src = maskCanvas.toDataURL();
+    }
+
+    function findHitNode(x, y) {
+      const hitDist = Math.max(24, 30 / Math.sqrt(scale));
+      for (let sIdx = vectorShapes.length - 1; sIdx >= 0; sIdx--) {
+        const pts = vectorShapes[sIdx].points;
+        for (let pIdx = 0; pIdx < pts.length; pIdx++) {
+          if (Math.hypot(pts[pIdx].x - x, pts[pIdx].y - y) <= hitDist) {
+            return { shapeIdx: sIdx, pointIdx: pIdx };
+          }
+        }
+      }
+      return null;
+    }
+
     function updateTransform() {
       const rect = wrapper.getBoundingClientRect();
       const maxTx = 0;
@@ -887,11 +1127,7 @@
 
       viewport.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
       zoomBadge.textContent = `Zoom: ${scale.toFixed(1)}x`;
-    }
-
-    function saveHistory() {
-      if (historyStack.length > 20) historyStack.shift();
-      historyStack.push(maskCanvas.toDataURL());
+      renderOverlayHandles();
     }
 
     function drawPlaceholderTemplate(label, triedPaths) {
@@ -908,7 +1144,7 @@
 
       baseCtx.fillStyle = "#fda4af";
       baseCtx.font = "600 24px sans-serif";
-      baseCtx.fillText("Immagine non trovata su questo URL. Controlla la cartella 'immagini' su GitHub:", INTERNAL_W / 2, INTERNAL_H / 2 + 10);
+      baseCtx.fillText("Immagine non trovata. Controlla la cartella 'immagini' su GitHub:", INTERNAL_W / 2, INTERNAL_H / 2 + 10);
 
       baseCtx.fillStyle = "#9aa3b2";
       baseCtx.font = "500 20px monospace";
@@ -924,9 +1160,11 @@
       function tryNext(idx) {
         if (idx >= triedPaths.length) {
           drawPlaceholderTemplate(labelText, triedPaths);
-          maskCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
-          historyStack = [];
-          saveHistory();
+          vectorShapes = [];
+          activePolylinePoints = [];
+          rasterSnapshot = null;
+          undoStack = [];
+          renderAll();
           resetZoom();
           return;
         }
@@ -941,9 +1179,12 @@
           const y = (INTERNAL_H - h) / 2;
           baseCtx.drawImage(img, x, y, w, h);
 
-          maskCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
-          historyStack = [];
-          saveHistory();
+          vectorShapes = [];
+          activePolylinePoints = [];
+          selectedShapeIdx = null;
+          rasterSnapshot = null;
+          undoStack = [{ shapes: [], raster: null }];
+          renderAll();
           resetZoom();
         };
         img.onerror = () => tryNext(idx + 1);
@@ -970,43 +1211,151 @@
       };
     }
 
-    function startStroke(x, y) {
-      isDrawing = true;
-      maskCtx.lineCap = "round";
-      maskCtx.lineJoin = "round";
-      maskCtx.lineWidth = (brushSize * 2.2) / Math.sqrt(scale);
-
-      if (mode === "brush") {
-        maskCtx.globalCompositeOperation = "source-over";
-        maskCtx.strokeStyle = "#ff0055";
-      } else {
-        maskCtx.globalCompositeOperation = "destination-out";
-        maskCtx.strokeStyle = "rgba(0,0,0,1)";
+    function handlePointerDown(x, y, isDoubleTap = false) {
+      // Prima controlla se l'utente sta afferrando un nodo esistente in edit_points o con punto vicino
+      if (toolMode === "edit_points") {
+        const hit = findHitNode(x, y);
+        if (hit) {
+          pushUndoState();
+          draggedNode = hit;
+          selectedShapeIdx = hit.shapeIdx;
+          const newW = Math.round(vectorShapes[hit.shapeIdx].width / 2.2);
+          brushSize = Math.min(60, Math.max(3, newW));
+          brushSizeInput.value = brushSize;
+          brushSizeVal.textContent = `${brushSize}px`;
+          renderAll();
+        }
+        return;
       }
 
-      maskCtx.beginPath();
-      maskCtx.moveTo(x, y);
-      maskCtx.lineTo(x + 0.1, y + 0.1);
-      maskCtx.stroke();
+      if (toolMode === "polyline") {
+        if (isDoubleTap && activePolylinePoints.length >= 2) {
+          commitActivePolyline(false);
+          return;
+        }
+        activePolylinePoints.push({ x, y });
+        renderAll();
+        return;
+      }
+
+      if (toolMode === "smart_line" || toolMode === "freehand") {
+        isDrawingFree = true;
+        freePath = [{ x, y }];
+        renderAll();
+        return;
+      }
+
+      if (toolMode === "eraser") {
+        // Unisce eventuali forme vettoriali nel raster per poterle cancellare con la gomma
+        pushUndoState();
+        renderMaskLayer();
+        const snap = new Image();
+        snap.onload = () => {
+          rasterSnapshot = snap;
+          vectorShapes = [];
+          activePolylinePoints = [];
+          selectedShapeIdx = null;
+          isDrawingFree = true;
+          freePath = [{ x, y }];
+          applyEraserSegment(x, y, x + 0.1, y + 0.1);
+        };
+        snap.src = maskCanvas.toDataURL();
+      }
     }
 
-    function moveStroke(x, y) {
-      if (!isDrawing) return;
-      maskCtx.lineTo(x, y);
-      maskCtx.stroke();
+    function applyEraserSegment(x1, y1, x2, y2) {
+      if (!rasterSnapshot) return;
+      const tmpCanvas = document.createElement("canvas");
+      tmpCanvas.width = INTERNAL_W;
+      tmpCanvas.height = INTERNAL_H;
+      const tCtx = tmpCanvas.getContext("2d");
+      tCtx.drawImage(rasterSnapshot, 0, 0);
+      tCtx.globalCompositeOperation = "destination-out";
+      tCtx.lineCap = "round";
+      tCtx.lineJoin = "round";
+      tCtx.lineWidth = brushSize * 2.5;
+      tCtx.beginPath();
+      tCtx.moveTo(x1, y1);
+      tCtx.lineTo(x2, y2);
+      tCtx.stroke();
+
+      const updated = new Image();
+      updated.onload = () => {
+        rasterSnapshot = updated;
+        renderAll();
+      };
+      updated.src = tmpCanvas.toDataURL();
     }
 
-    function endStroke() {
-      if (!isDrawing) return;
-      isDrawing = false;
-      maskCtx.closePath();
-      saveHistory();
+    function handlePointerMove(x, y) {
+      if (draggedNode) {
+        vectorShapes[draggedNode.shapeIdx].points[draggedNode.pointIdx] = { x, y };
+        renderAll();
+        return;
+      }
+
+      if (!isDrawingFree) return;
+
+      if (toolMode === "eraser") {
+        const prev = freePath[freePath.length - 1];
+        freePath.push({ x, y });
+        applyEraserSegment(prev.x, prev.y, x, y);
+        return;
+      }
+
+      freePath.push({ x, y });
+      renderAll();
     }
 
+    function handlePointerUp() {
+      if (draggedNode) {
+        draggedNode = null;
+        renderAll();
+        return;
+      }
+
+      if (!isDrawingFree) return;
+      isDrawingFree = false;
+
+      if (toolMode === "smart_line" && freePath.length >= 2) {
+        pushUndoState();
+        const start = freePath[0];
+        const end = freePath[freePath.length - 1];
+        const pts = isStraightLine(freePath) ? [start, end] : freePath.slice();
+        vectorShapes.push({
+          points: pts,
+          width: brushSize * 2.2,
+          closed: false
+        });
+        selectedShapeIdx = vectorShapes.length - 1;
+        freePath = [];
+        renderAll();
+        return;
+      }
+
+      if (toolMode === "freehand" && freePath.length >= 2) {
+        pushUndoState();
+        renderMaskLayer();
+        const snap = new Image();
+        snap.onload = () => {
+          rasterSnapshot = snap;
+          freePath = [];
+          renderAll();
+        };
+        snap.src = maskCanvas.toDataURL();
+        return;
+      }
+
+      freePath = [];
+      renderAll();
+    }
+
+    // Touch events
     wrapper.addEventListener("touchstart", (e) => {
       e.preventDefault();
       if (e.touches.length === 2) {
-        isDrawing = false;
+        isDrawingFree = false;
+        draggedNode = null;
         isPinching = true;
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
@@ -1017,8 +1366,11 @@
           y: (e.touches[0].clientY + e.touches[1].clientY) / 2
         };
       } else if (e.touches.length === 1 && !isPinching) {
+        const now = Date.now();
+        const isDoubleTap = now - lastTapTime < 320;
+        lastTapTime = now;
         const pos = getCanvasCoords(e.touches[0].clientX, e.touches[0].clientY);
-        startStroke(pos.x, pos.y);
+        handlePointerDown(pos.x, pos.y, isDoubleTap);
       }
     }, { passive: false });
 
@@ -1044,17 +1396,18 @@
         scale = newScale;
         lastPanCenter = center;
         updateTransform();
-      } else if (e.touches.length === 1 && isDrawing && !isPinching) {
+      } else if (e.touches.length === 1 && !isPinching) {
         const pos = getCanvasCoords(e.touches[0].clientX, e.touches[0].clientY);
-        moveStroke(pos.x, pos.y);
+        handlePointerMove(pos.x, pos.y);
       }
     }, { passive: false });
 
     wrapper.addEventListener("touchend", (e) => {
       if (e.touches.length < 2) isPinching = false;
-      if (e.touches.length === 0) endStroke();
+      if (e.touches.length === 0) handlePointerUp();
     });
 
+    // Mouse events
     wrapper.addEventListener("contextmenu", (e) => e.preventDefault());
 
     wrapper.addEventListener("mousedown", (e) => {
@@ -1065,7 +1418,14 @@
       }
       if (e.button === 0) {
         const pos = getCanvasCoords(e.clientX, e.clientY);
-        startStroke(pos.x, pos.y);
+        handlePointerDown(pos.x, pos.y, false);
+      }
+    });
+
+    wrapper.addEventListener("dblclick", (e) => {
+      if (toolMode === "polyline" && activePolylinePoints.length >= 2) {
+        e.preventDefault();
+        commitActivePolyline(false);
       }
     });
 
@@ -1077,14 +1437,13 @@
         updateTransform();
         return;
       }
-      if (!isDrawing) return;
       const pos = getCanvasCoords(e.clientX, e.clientY);
-      moveStroke(pos.x, pos.y);
+      handlePointerMove(pos.x, pos.y);
     });
 
     window.addEventListener("mouseup", () => {
       isPanningMouse = false;
-      endStroke();
+      handlePointerUp();
     });
 
     wrapper.addEventListener("wheel", (e) => {
@@ -1100,33 +1459,35 @@
       updateTransform();
     }, { passive: false });
 
-    brushBtn.addEventListener("click", () => {
-      mode = "brush";
-      brushBtn.classList.add("active");
-      eraserBtn.classList.remove("active");
-    });
-
-    eraserBtn.addEventListener("click", () => {
-      mode = "eraser";
-      eraserBtn.classList.add("active");
-      brushBtn.classList.remove("active");
-    });
-
     undoBtn.addEventListener("click", () => {
-      if (historyStack.length <= 1) return;
-      historyStack.pop();
-      const prev = new Image();
-      prev.onload = () => {
-        maskCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
-        maskCtx.globalCompositeOperation = "source-over";
-        maskCtx.drawImage(prev, 0, 0);
-      };
-      prev.src = historyStack[historyStack.length - 1];
+      if (activePolylinePoints.length > 0) {
+        activePolylinePoints.pop();
+        renderAll();
+        return;
+      }
+      if (!undoStack.length) return;
+      const prev = undoStack.pop();
+      vectorShapes = JSON.parse(JSON.stringify(prev.shapes || []));
+      if (prev.raster) {
+        const img = new Image();
+        img.onload = () => {
+          rasterSnapshot = img;
+          renderAll();
+        };
+        img.src = prev.raster;
+      } else {
+        rasterSnapshot = null;
+        renderAll();
+      }
     });
 
     clearBtn.addEventListener("click", () => {
-      maskCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
-      saveHistory();
+      pushUndoState();
+      vectorShapes = [];
+      activePolylinePoints = [];
+      selectedShapeIdx = null;
+      rasterSnapshot = null;
+      renderAll();
     });
 
     resetZoomBtn.addEventListener("click", resetZoom);
@@ -1134,6 +1495,16 @@
     brushSizeInput.addEventListener("input", (e) => {
       brushSize = Number(e.target.value);
       brushSizeVal.textContent = `${brushSize}px`;
+
+      // Aggiorna in tempo reale lo spessore della linea selezionata o dell'ultima creata
+      const targetIdx = selectedShapeIdx !== null && vectorShapes[selectedShapeIdx]
+        ? selectedShapeIdx
+        : (vectorShapes.length > 0 ? vectorShapes.length - 1 : null);
+
+      if (targetIdx !== null) {
+        vectorShapes[targetIdx].width = brushSize * 2.2;
+      }
+      renderAll();
     });
 
     document.querySelectorAll(".view-btn").forEach((btn) => {
@@ -1152,6 +1523,11 @@
     });
 
     function exportBinaryMask() {
+      if (activePolylinePoints.length >= 2) {
+        commitActivePolyline(false);
+      }
+      renderMaskLayer();
+
       const exportCanvas = document.createElement("canvas");
       exportCanvas.width = INTERNAL_W;
       exportCanvas.height = INTERNAL_H;
@@ -1195,7 +1571,7 @@
 
       const { dataUrl: maskImage, hasPaintedPixels } = exportBinaryMask();
       if (!hasPaintedPixels) {
-        errorBanner.textContent = "Evidenzia con il pennello la zona della carrozzeria in cui vuoi applicare il body kit.";
+        errorBanner.textContent = "Traccia linee o aree con la maschera sulla carrozzeria prima di generare.";
         errorBanner.style.display = "block";
         return;
       }
@@ -1222,7 +1598,7 @@
         try {
           data = JSON.parse(rawText);
         } catch {
-          throw new Error("Risposta non JSON dal server (se stai aprendo da GitHub Pages, la generazione AI richiede il deploy su Vercel).");
+          throw new Error("Risposta non JSON dal server (verifica che il sito sia aperto tramite deploy Vercel).");
         }
 
         if (!res.ok) {
@@ -1251,9 +1627,12 @@
       img.onload = () => {
         baseCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
         baseCtx.drawImage(img, 0, 0, INTERNAL_W, INTERNAL_H);
-        maskCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
-        historyStack = [];
-        saveHistory();
+        vectorShapes = [];
+        activePolylinePoints = [];
+        selectedShapeIdx = null;
+        rasterSnapshot = null;
+        undoStack = [];
+        renderAll();
         resetZoom();
         wrapper.scrollIntoView({ behavior: "smooth" });
       };
