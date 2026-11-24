@@ -15,6 +15,8 @@
       --muted: #9aa3b2;
       --border: #252b38;
       --ok: #10b981;
+      --depth-out: #f97316;
+      --depth-in: #38bdf8;
     }
 
     * {
@@ -28,7 +30,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      line-height: 1.55;
+      line-height: 1.5;
       overflow-x: hidden;
     }
 
@@ -36,9 +38,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      padding: 14px 18px;
-      background: rgba(9, 10, 13, 0.92);
+      gap: 8px;
+      padding: 12px 16px;
+      background: rgba(9, 10, 13, 0.94);
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
@@ -48,7 +50,7 @@
 
     .brand {
       font-weight: 800;
-      font-size: 1.08rem;
+      font-size: 1.05rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       white-space: nowrap;
@@ -61,7 +63,7 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
       justify-content: flex-end;
     }
@@ -69,9 +71,9 @@
     .token-badge {
       background: var(--surface-2);
       border: 1px solid var(--border);
-      padding: 5px 10px;
+      padding: 5px 9px;
       border-radius: 999px;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 600;
       white-space: nowrap;
     }
@@ -84,82 +86,84 @@
       background: var(--surface);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 6px 11px;
+      padding: 6px 10px;
       border-radius: 8px;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
+      min-height: 34px;
     }
 
     .btn-account {
       background: var(--accent);
       border: 1px solid var(--accent);
       color: #fff;
-      padding: 6px 12px;
+      padding: 6px 11px;
       border-radius: 8px;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
       cursor: pointer;
       white-space: nowrap;
+      min-height: 34px;
     }
 
     .hero {
-      padding: 32px 18px 22px;
+      padding: 20px 16px 14px;
       max-width: 720px;
       margin: 0 auto;
     }
 
     .pill {
       display: inline-block;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.09em;
       color: #fda4af;
       background: rgba(225, 29, 72, 0.14);
       border: 1px solid rgba(225, 29, 72, 0.35);
-      padding: 4px 12px;
+      padding: 3px 10px;
       border-radius: 999px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       font-weight: 700;
     }
 
     .hero h1 {
-      font-size: 1.72rem;
+      font-size: 1.45rem;
       font-weight: 800;
       line-height: 1.2;
       letter-spacing: -0.02em;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     .hero p {
       color: var(--muted);
-      font-size: 0.94rem;
-      margin-bottom: 16px;
+      font-size: 0.88rem;
+      margin-bottom: 10px;
     }
 
     .vision-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-left: 3px solid var(--accent);
-      border-radius: 12px;
-      padding: 14px 16px;
-      font-size: 0.86rem;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 0.82rem;
       color: #e5e7eb;
     }
 
     .studio {
       max-width: 720px;
       margin: 0 auto;
-      padding: 8px 16px 36px;
+      padding: 6px 14px 36px;
     }
 
     .step-label {
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--muted);
-      margin-bottom: 8px;
+      margin-bottom: 7px;
       font-weight: 700;
       display: flex;
       justify-content: space-between;
@@ -170,20 +174,21 @@
     .view-selector {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 16px;
+      gap: 7px;
+      margin-bottom: 12px;
     }
 
     .view-btn {
       background: var(--surface);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 11px 10px;
+      padding: 10px 8px;
       border-radius: 10px;
       font-weight: 600;
-      font-size: 0.84rem;
+      font-size: 0.8rem;
       cursor: pointer;
       text-align: center;
+      min-height: 42px;
     }
 
     .view-btn.active {
@@ -200,7 +205,7 @@
       border-radius: 14px;
       overflow: hidden;
       touch-action: none;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     #viewport {
@@ -213,7 +218,7 @@
       will-change: transform;
     }
 
-    #baseCanvas, #maskCanvas, #overlayCanvas {
+    #baseCanvas, #maskCanvas, #depthCanvas, #overlayCanvas {
       position: absolute;
       top: 0;
       left: 0;
@@ -223,7 +228,12 @@
     }
 
     #maskCanvas {
-      opacity: 0.62;
+      opacity: 0.52;
+    }
+
+    #depthCanvas {
+      opacity: 0.58;
+      pointer-events: none;
     }
 
     #overlayCanvas {
@@ -232,46 +242,99 @@
 
     .zoom-indicator {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(9, 10, 13, 0.8);
+      top: 8px;
+      right: 8px;
+      background: rgba(9, 10, 13, 0.82);
       color: #fff;
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 600;
-      padding: 4px 9px;
+      padding: 4px 8px;
       border-radius: 6px;
       pointer-events: none;
       border: 1px solid rgba(255,255,255,0.14);
+      z-index: 5;
+    }
+
+    /* LENTE DI INGRANDIMENTO TOUCH (LOUPE) */
+    .loupe-box {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+      overflow: hidden;
+      background: #090a0d;
+      display: none;
+      pointer-events: none;
+      z-index: 6;
+    }
+
+    .loupe-box.active {
+      display: block;
+    }
+
+    #loupeCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .loupe-crosshair {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .loupe-crosshair::before,
+    .loupe-crosshair::after {
+      content: "";
+      position: absolute;
+      background: rgba(255, 255, 255, 0.75);
+    }
+
+    .loupe-crosshair::before {
+      width: 14px;
+      height: 1.5px;
+    }
+
+    .loupe-crosshair::after {
+      width: 1.5px;
+      height: 14px;
     }
 
     .hint-bar {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: var(--muted);
       text-align: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
-    /* TOOLBAR */
     .toolbar {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 16px;
+      padding: 11px;
+      margin-bottom: 14px;
     }
 
     .tool-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 6px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .tool-row-secondary {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 6px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .tool-btn {
@@ -283,6 +346,7 @@
       font-size: 0.78rem;
       font-weight: 600;
       cursor: pointer;
+      min-height: 40px;
     }
 
     .tool-btn.active {
@@ -296,6 +360,71 @@
       color: #6ee7b7;
     }
 
+    /* SEZIONE PROFONDITÀ COLLASSABILE */
+    .depth-panel {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 10px;
+      margin-bottom: 10px;
+    }
+
+    .depth-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .depth-controls {
+      display: none;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .depth-controls.open {
+      display: block;
+    }
+
+    .depth-mode-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .depth-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      min-height: 36px;
+    }
+
+    .depth-btn.active-out {
+      border-color: var(--depth-out);
+      background: rgba(249, 115, 22, 0.2);
+      color: #fed7aa;
+    }
+
+    .depth-btn.active-in {
+      border-color: var(--depth-in);
+      background: rgba(56, 189, 248, 0.2);
+      color: #bae6fd;
+    }
+
+    .depth-note {
+      font-size: 0.73rem;
+      color: var(--muted);
+    }
+
     .slider-row {
       display: flex;
       align-items: center;
@@ -307,30 +436,38 @@
     .slider-row input[type="range"] {
       flex: 1;
       accent-color: var(--accent);
+      min-height: 28px;
     }
 
     .prompt-box {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 14px;
+      padding: 13px;
     }
 
     .tags {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .tag-chip {
       background: var(--surface-2);
       border: 1px solid var(--border);
       color: #d1d5db;
-      font-size: 0.75rem;
-      padding: 5px 10px;
+      font-size: 0.74rem;
+      padding: 6px 10px;
       border-radius: 999px;
       cursor: pointer;
+      min-height: 32px;
+    }
+
+    .tag-chip.selected-mat {
+      border-color: var(--accent);
+      background: rgba(225, 29, 72, 0.18);
+      color: #fff;
     }
 
     textarea {
@@ -342,8 +479,8 @@
       padding: 10px;
       font-size: 0.9rem;
       resize: none;
-      height: 76px;
-      margin-bottom: 12px;
+      height: 74px;
+      margin-bottom: 10px;
       font-family: inherit;
     }
 
@@ -362,6 +499,7 @@
       font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
+      min-height: 46px;
     }
 
     .btn-primary:hover {
@@ -373,6 +511,7 @@
       cursor: wait;
     }
 
+    /* CONFRONTO PRIMA / DOPO */
     .result-box {
       margin-top: 20px;
       background: var(--surface);
@@ -387,11 +526,76 @@
       margin-bottom: 10px;
     }
 
-    .result-box img {
+    .compare-stage {
+      position: relative;
       width: 100%;
+      aspect-ratio: 16 / 10;
       border-radius: 10px;
+      overflow: hidden;
       border: 1px solid var(--border);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .compare-stage img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .compare-after-wrap {
+      position: absolute;
+      inset: 0;
+      width: 50%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .compare-after-wrap img {
+      width: 200%;
+      max-width: none;
+    }
+
+    .compare-divider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.8);
+      pointer-events: none;
+    }
+
+    .compare-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff;
+      pointer-events: none;
+    }
+
+    .compare-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 10px;
     }
 
     .result-actions {
@@ -401,8 +605,9 @@
     }
 
     .btn-download {
-      display: block;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-decoration: none;
       background: var(--surface-2);
       border: 1px solid var(--border);
@@ -411,10 +616,11 @@
       border-radius: 8px;
       font-size: 0.85rem;
       font-weight: 700;
+      min-height: 42px;
     }
 
     .error-banner {
-      margin-top: 12px;
+      margin-top: 10px;
       background: rgba(225, 29, 72, 0.15);
       border: 1px solid var(--accent);
       color: #fecdd3;
@@ -468,8 +674,8 @@
       background: var(--surface-2);
       border: 1px solid var(--border);
       color: var(--text);
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       border-radius: 8px;
       font-size: 1rem;
       cursor: pointer;
@@ -480,7 +686,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      font-size: 0.86rem;
+      font-size: 0.85rem;
       color: #d1d5db;
     }
 
@@ -614,7 +820,7 @@
     <div class="header-actions">
       <div class="token-badge">Token: <strong id="tokenCount">3</strong></div>
       <button class="btn-ghost" id="openTokensBtn">+ Token</button>
-      <button class="btn-ghost" id="openGuideBtn">Guida Tecnica</button>
+      <button class="btn-ghost" id="openGuideBtn">Guida</button>
       <button class="btn-account" id="openAuthBtn">Registrati</button>
     </div>
   </header>
@@ -630,7 +836,7 @@
 
   <main class="studio">
     <div class="step-label">
-      <span>Seleziona Vista — Alfa Romeo Giulia</span>
+      <span>1. Seleziona Vista — Alfa Romeo Giulia</span>
     </div>
     <div class="view-selector">
       <button class="view-btn active" data-view="front_angle">Fronte Angolare Anteriore</button>
@@ -640,19 +846,24 @@
     </div>
 
     <div class="step-label">
-      <span>Area di Progettazione e Maschera</span>
+      <span>2. Maschera &amp; Volumi</span>
       <button id="resetZoomBtn" style="background:none;border:none;color:#fda4af;font-size:0.78rem;font-weight:700;cursor:pointer;">Ripristina Vista</button>
     </div>
 
     <div class="canvas-wrapper" id="canvasWrapper">
+      <div class="loupe-box" id="loupeBox">
+        <canvas id="loupeCanvas" width="208" height="208"></canvas>
+        <div class="loupe-crosshair"></div>
+      </div>
       <div id="viewport">
         <canvas id="baseCanvas"></canvas>
         <canvas id="maskCanvas"></canvas>
+        <canvas id="depthCanvas"></canvas>
         <canvas id="overlayCanvas"></canvas>
       </div>
       <div class="zoom-indicator" id="zoomBadge">Zoom: 1.0x</div>
     </div>
-    <div class="hint-bar" id="modeHint">2 dita: zoom (fino a 6x) e spostamento • Tocca/clicca per aggiungere punti (doppio tocco per chiudere linea)</div>
+    <div class="hint-bar" id="modeHint">2 dita: zoom/sposta • Tocca/clicca per aggiungere punti • Tocca vicino al 1° punto per chiudere e riempire</div>
 
     <div class="toolbar">
       <div class="tool-row">
@@ -663,12 +874,36 @@
       <div class="tool-row-secondary">
         <button class="tool-btn" data-mode="freehand">Mano Libera</button>
         <button class="tool-btn" data-mode="eraser">Gomma</button>
-        <button class="tool-btn finish-line" id="finishPolylineBtn">Chiudi Linea</button>
+        <button class="tool-btn finish-line" id="finishPolylineBtn">Chiudi / Riempi</button>
         <button class="tool-btn" id="undoBtn">Annulla</button>
       </div>
-      <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
-        <button class="tool-btn" id="clearBtn" style="padding:5px 10px;font-size:0.74rem;">Pulisci Tutto</button>
+
+      <!-- GUIDE DI PROFONDITÀ (COLLASSABILI PER NON APPESANTIRE) -->
+      <div class="depth-panel">
+        <div class="depth-header">
+          <span>Guide Profondità 3D (Opzionale)</span>
+          <button type="button" class="btn-ghost" id="toggleDepthBtn" style="padding:4px 9px;min-height:28px;">Attiva</button>
+        </div>
+        <div class="depth-controls" id="depthControls">
+          <div class="depth-mode-row">
+            <button type="button" class="depth-btn active-out" id="depthOutBtn">Arancio: Sporgente / Esterno</button>
+            <button type="button" class="depth-btn" id="depthInBtn">Azzurro: Rientrante / Interno</button>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+            <span class="depth-note">Segna i bordi che sporgono in arancio e le rientranze/canali in azzurro.</span>
+            <button type="button" class="btn-ghost" id="clearDepthBtn" style="padding:4px 8px;min-height:26px;font-size:0.72rem;">Pulisci Guide</button>
+          </div>
+        </div>
       </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px;">
+        <label style="display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--muted);cursor:pointer;">
+          <input type="checkbox" id="loupeToggle" checked style="accent-color:var(--accent);" />
+          Lente precisione touch
+        </label>
+        <button class="tool-btn" id="clearBtn" style="padding:5px 10px;font-size:0.74rem;min-height:32px;">Pulisci Maschera</button>
+      </div>
+
       <div class="slider-row">
         <span>Spessore tratto:</span>
         <input type="range" id="brushSize" min="3" max="60" value="16" />
@@ -677,26 +912,43 @@
     </div>
 
     <div class="step-label">
-      <span>Specifiche Estetiche del Componente</span>
+      <span>3. Finitura &amp; Specifiche Componente</span>
     </div>
     <div class="prompt-box">
       <div class="tags">
-        <span class="tag-chip" data-text="splitter anteriore basso in fibra di carbonio con profili laterali">+ Splitter Carbonio</span>
-        <span class="tag-chip" data-text="minigonne laterali profilate nero lucido ad alta precisione">+ Minigonne</span>
+        <span class="tag-chip" data-text="splitter anteriore basso con profili laterali">+ Splitter</span>
+        <span class="tag-chip" data-text="minigonne laterali profilate">+ Minigonne</span>
         <span class="tag-chip" data-text="estrattore posteriore sportivo con canali aerodinamici">+ Estrattore</span>
-        <span class="tag-chip" data-text="spoiler posteriore lip integrato in carbonio">+ Spoiler Lip</span>
+        <span class="tag-chip" data-text="spoiler posteriore lip integrato">+ Spoiler Lip</span>
       </div>
-      <textarea id="promptInput" placeholder="Descrivi stile, materiali e proporzioni del componente da generare nell'area evidenziata..."></textarea>
+      <div class="tags">
+        <span class="tag-chip mat-chip" data-mat="in fibra di carbonio lucida a trama twill">Carbonio Lucido</span>
+        <span class="tag-chip mat-chip" data-mat="in fibra di carbonio forgiata">Carbonio Forgiato</span>
+        <span class="tag-chip mat-chip" data-mat="in nero lucido gloss black">Nero Lucido</span>
+        <span class="tag-chip mat-chip" data-mat="in tinta con la carrozzeria e dettagli scuri">Tinta Carrozzeria</span>
+      </div>
+      <textarea id="promptInput" placeholder="Descrivi stile, sporgenze, rientranze e proporzioni del componente..."></textarea>
       <button class="btn-primary" id="generateBtn">Genera Proposta (1 Token)</button>
       <div class="error-banner" id="errorBanner"></div>
     </div>
 
     <div class="result-box" id="resultBox">
-      <h3>Proposta Generata — Alfa Romeo Giulia</h3>
-      <img id="generatedResultImg" alt="Render Body Kit AI" />
+      <h3>Confronto Originale / Render AI — Alfa Romeo Giulia</h3>
+      <div class="compare-stage" id="compareStage">
+        <img id="compareBeforeImg" alt="Originale Giulia" />
+        <div class="compare-after-wrap" id="compareAfterWrap">
+          <img id="compareAfterImg" alt="Render Body Kit AI" />
+        </div>
+        <div class="compare-divider" id="compareDivider"></div>
+        <div class="compare-handle" id="compareHandle">↔</div>
+      </div>
+      <div class="compare-labels">
+        <span>Trascina ↔ per confrontare: Originale vs Render</span>
+        <span>Render AI</span>
+      </div>
       <div class="result-actions">
         <a id="downloadRenderLink" class="btn-download" download="4R3S-Giulia-Concept.png">Scarica Render</a>
-        <button class="btn-primary" id="useAsBaseBtn" style="padding:11px;font-size:0.85rem;">Continua su questa vista</button>
+        <button class="btn-primary" id="useAsBaseBtn" style="padding:11px;font-size:0.85rem;min-height:42px;">Continua su questa vista</button>
       </div>
     </div>
   </main>
@@ -709,20 +961,20 @@
       </div>
       <ul class="guide-list">
         <li>
-          <strong>1. Linea Punti (da punto a punto)</strong>
-          Tocca o clicca lungo il bordo desiderato per collegare i punti. Fai doppio clic/tocco o premi "Chiudi Linea" per terminare il tratto.
+          <strong>1. Linea Punti &amp; Riempimento automatico</strong>
+          Tocca lungo i bordi per creare il profilo. Se chiudi sul primo punto (o premi "Chiudi / Riempi"), l'area interna viene riempita automaticamente per definire l'intero componente.
         </li>
         <li>
-          <strong>2. Smart Linea (stile Anteprima macOS)</strong>
-          Traccia una linea a mano libera: se è sufficientemente dritta, viene convertita automaticamente in un segmento dritto con punti regolabili.
+          <strong>2. Smart Linea, Modifica Punti e Mano Libera</strong>
+          "Smart Linea" raddrizza i tratti dritti a mano libera. Con "Modifica Punti" sposti i nodi e con lo spessore regoli la larghezza. Usa "Mano Libera" e "Gomma" per i dettagli.
         </li>
         <li>
-          <strong>3. Modifica Punti e Spessore tratto</strong>
-          Seleziona "Modifica Punti" per trascinare qualsiasi punto di collegamento e usa lo slider "Spessore tratto" per allargare o stringere la linea creata.
+          <strong>3. Guide Profondità 3D (Arancio = Esterno / Azzurro = Interno)</strong>
+          Attiva le guide solo quando vuoi indicare all'AI cosa sporge verso l'esterno (arancio) e cosa rientra o crea canale verso l'interno (azzurro).
         </li>
         <li>
-          <strong>4. Mano Libera e Gomma per i dettagli</strong>
-          Usa "Mano Libera" per aggiungere particolari curvi o sfumature e "Gomma" per ripulire le zone in eccesso.
+          <strong>4. Confronto Prima / Dopo &amp; Token</strong>
+          Dopo la generazione trascina la maniglia ↔ per confrontare originale e render. Ogni generazione consuma 1 Token (3 gratuiti iniziali, poi pacchetti token).
         </li>
       </ul>
     </div>
@@ -819,11 +1071,16 @@
     const viewport = document.getElementById("viewport");
     const baseCanvas = document.getElementById("baseCanvas");
     const maskCanvas = document.getElementById("maskCanvas");
+    const depthCanvas = document.getElementById("depthCanvas");
     const overlayCanvas = document.getElementById("overlayCanvas");
+    const loupeBox = document.getElementById("loupeBox");
+    const loupeCanvas = document.getElementById("loupeCanvas");
 
     const baseCtx = baseCanvas.getContext("2d");
     const maskCtx = maskCanvas.getContext("2d");
+    const depthCtx = depthCanvas.getContext("2d");
     const overlayCtx = overlayCanvas.getContext("2d");
+    const loupeCtx = loupeCanvas.getContext("2d");
 
     const zoomBadge = document.getElementById("zoomBadge");
     const modeHint = document.getElementById("modeHint");
@@ -833,6 +1090,7 @@
     const resetZoomBtn = document.getElementById("resetZoomBtn");
     const brushSizeInput = document.getElementById("brushSize");
     const brushSizeVal = document.getElementById("brushSizeVal");
+    const loupeToggle = document.getElementById("loupeToggle");
     const promptInput = document.getElementById("promptInput");
     const generateBtn = document.getElementById("generateBtn");
     const errorBanner = document.getElementById("errorBanner");
@@ -842,34 +1100,35 @@
 
     const INTERNAL_W = 1600;
     const INTERNAL_H = 1000;
-    baseCanvas.width = maskCanvas.width = overlayCanvas.width = INTERNAL_W;
-    baseCanvas.height = maskCanvas.height = overlayCanvas.height = INTERNAL_H;
+    baseCanvas.width = maskCanvas.width = depthCanvas.width = overlayCanvas.width = INTERNAL_W;
+    baseCanvas.height = maskCanvas.height = depthCanvas.height = overlayCanvas.height = INTERNAL_H;
 
-    // Modi: 'polyline' | 'smart_line' | 'edit_points' | 'freehand' | 'eraser'
-    let toolMode = "polyline";
+    let toolMode = "polyline"; // 'polyline' | 'smart_line' | 'edit_points' | 'freehand' | 'eraser'
+    let depthEnabled = false;
+    let depthKind = "out"; // 'out' (sporgente arancio) | 'in' (rientrante azzurro)
     let brushSize = 16;
     let currentViewLabel = "Fronte Angolare Anteriore";
     let tokens = 3;
 
-    // Elementi vettoriali modificabili (linee / polilinee / segmenti smart)
-    // Ogni elemento: { points: [{x, y}, ...], width: number, closed: boolean }
+    // Elementi vettoriali maschera: { points: [{x,y}], width: number, fillClosed: boolean }
     let vectorShapes = [];
     let activePolylinePoints = [];
     let selectedShapeIdx = null;
-    let draggedNode = null; // { shapeIdx, pointIdx }
+    let draggedNode = null;
 
-    // Tracciamento mano libera / smart line / gomma
+    // Guide di profondità: { points: [{x,y}], width: number, kind: 'out'|'in' }
+    let depthStrokes = [];
+    let activeDepthPoints = [];
+
     let isDrawingFree = false;
     let freePath = [];
     let isPanningMouse = false;
     let lastMousePan = { x: 0, y: 0 };
     let lastTapTime = 0;
 
-    // Undo stack (snapshot di vectorShapes + raster freehand/eraser)
     let undoStack = [];
     let rasterSnapshot = null;
 
-    // Zoom & Pan
     let scale = 1;
     let translateX = 0;
     let translateY = 0;
@@ -877,6 +1136,10 @@
     let initialPinchDist = 0;
     let initialScale = 1;
     let lastPanCenter = { x: 0, y: 0 };
+
+    function vibrateTap(ms = 12) {
+      if (navigator.vibrate) navigator.vibrate(ms);
+    }
 
     function openModal(id) { document.getElementById(id).classList.add("open"); }
     function closeModal(id) { document.getElementById(id).classList.remove("open"); }
@@ -918,7 +1181,49 @@
       status.textContent = `Profilo "${nick}" attivato.`;
     });
 
+    // Controlli Profondità
+    const toggleDepthBtn = document.getElementById("toggleDepthBtn");
+    const depthControls = document.getElementById("depthControls");
+    const depthOutBtn = document.getElementById("depthOutBtn");
+    const depthInBtn = document.getElementById("depthInBtn");
+
+    toggleDepthBtn.addEventListener("click", () => {
+      depthEnabled = !depthEnabled;
+      toggleDepthBtn.textContent = depthEnabled ? "Attivo" : "Attiva";
+      depthControls.classList.toggle("open", depthEnabled);
+      if (depthEnabled && activePolylinePoints.length >= 2) {
+        commitActivePolyline(false);
+      }
+      modeHint.textContent = depthEnabled
+        ? "Modalità Profondità attiva: traccia arancio (sporgente/esterno) o azzurro (rientrante/interno)"
+        : "2 dita: zoom/sposta • Tocca/clicca per aggiungere punti";
+      renderAll();
+    });
+
+    depthOutBtn.addEventListener("click", () => {
+      depthKind = "out";
+      depthOutBtn.classList.add("active-out");
+      depthInBtn.classList.remove("active-in");
+    });
+
+    depthInBtn.addEventListener("click", () => {
+      depthKind = "in";
+      depthInBtn.classList.add("active-in");
+      depthOutBtn.classList.remove("active-out");
+    });
+
+    document.getElementById("clearDepthBtn").addEventListener("click", () => {
+      pushUndoState();
+      depthStrokes = [];
+      activeDepthPoints = [];
+      renderAll();
+    });
+
     function setMode(newMode) {
+      depthEnabled = false;
+      toggleDepthBtn.textContent = "Attiva";
+      depthControls.classList.remove("open");
+
       if (toolMode === "polyline" && newMode !== "polyline" && activePolylinePoints.length >= 2) {
         commitActivePolyline(false);
       }
@@ -928,8 +1233,8 @@
       });
 
       const hints = {
-        polyline: "2 dita: zoom/sposta • Tocca/clicca per collegare punti • Doppio tocco o 'Chiudi Linea' per completare",
-        smart_line: "Traccia un tratto a mano libera: se è dritto diventa una linea retta con punti regolabili",
+        polyline: "2 dita: zoom/sposta • Tocca/clicca per collegare punti • Chiudi sul 1° punto per riempire l'area",
+        smart_line: "Traccia a mano libera: se è dritto diventa una linea retta con punti regolabili",
         edit_points: "Trascina i punti rossi per spostare i collegamenti • Usa lo slider per regolare lo spessore",
         freehand: "Disegna a mano libera per aggiungere dettagli o curve",
         eraser: "Cancella le zone della maschera che non ti servono"
@@ -946,26 +1251,30 @@
       if (undoStack.length > 25) undoStack.shift();
       undoStack.push({
         shapes: JSON.parse(JSON.stringify(vectorShapes)),
+        depth: JSON.parse(JSON.stringify(depthStrokes)),
         raster: maskCanvas.toDataURL()
       });
     }
 
-    function commitActivePolyline(closed = false) {
+    function commitActivePolyline(fillClosed = false) {
       if (activePolylinePoints.length >= 2) {
         pushUndoState();
         vectorShapes.push({
           points: activePolylinePoints.map((p) => ({ ...p })),
           width: brushSize * 2.2,
-          closed
+          fillClosed
         });
         selectedShapeIdx = vectorShapes.length - 1;
+        vibrateTap(15);
       }
       activePolylinePoints = [];
       renderAll();
     }
 
     finishPolylineBtn.addEventListener("click", () => {
-      if (activePolylinePoints.length >= 2) {
+      if (activePolylinePoints.length >= 3) {
+        commitActivePolyline(true);
+      } else if (activePolylinePoints.length === 2) {
         commitActivePolyline(false);
       } else {
         activePolylinePoints = [];
@@ -973,7 +1282,6 @@
       }
     });
 
-    // Riconoscimento linea retta stile "Anteprima" macOS
     function isStraightLine(pts) {
       if (pts.length < 4) return false;
       const start = pts[0];
@@ -992,8 +1300,17 @@
         if (dist > maxDev) maxDev = dist;
       }
 
-      // Se la deviazione massima rispetto alla corda è contenuta, è una linea retta
       return maxDev / chordLen < 0.08 && maxDev < 28;
+    }
+
+    function drawPathOnContext(ctx, pts, closed = false) {
+      if (!pts || pts.length === 0) return;
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length; i++) {
+        ctx.lineTo(pts[i].x, pts[i].y);
+      }
+      if (closed) ctx.closePath();
     }
 
     function renderMaskLayer() {
@@ -1006,53 +1323,63 @@
       maskCtx.save();
       maskCtx.globalCompositeOperation = "source-over";
       maskCtx.strokeStyle = "#ff0055";
-      maskCtx.fillStyle = "#ff0055";
+      maskCtx.fillStyle = "rgba(255, 0, 85, 0.42)";
       maskCtx.lineCap = "round";
       maskCtx.lineJoin = "round";
 
       for (const shape of vectorShapes) {
         if (!shape.points || shape.points.length < 2) continue;
         maskCtx.lineWidth = shape.width;
-        maskCtx.beginPath();
-        maskCtx.moveTo(shape.points[0].x, shape.points[0].y);
-        for (let i = 1; i < shape.points.length; i++) {
-          maskCtx.lineTo(shape.points[i].x, shape.points[i].y);
-        }
-        if (shape.closed) maskCtx.closePath();
+        drawPathOnContext(maskCtx, shape.points, shape.fillClosed);
+        if (shape.fillClosed) maskCtx.fill();
         maskCtx.stroke();
       }
 
       if (activePolylinePoints.length > 0) {
         maskCtx.lineWidth = brushSize * 2.2;
-        maskCtx.beginPath();
-        maskCtx.moveTo(activePolylinePoints[0].x, activePolylinePoints[0].y);
-        for (let i = 1; i < activePolylinePoints.length; i++) {
-          maskCtx.lineTo(activePolylinePoints[i].x, activePolylinePoints[i].y);
-        }
+        drawPathOnContext(maskCtx, activePolylinePoints, false);
         maskCtx.stroke();
       }
 
-      if (isDrawingFree && freePath.length > 1) {
+      if (isDrawingFree && !depthEnabled && freePath.length > 1) {
         maskCtx.lineWidth = brushSize * 2.2;
-        maskCtx.beginPath();
-        maskCtx.moveTo(freePath[0].x, freePath[0].y);
-        for (let i = 1; i < freePath.length; i++) {
-          maskCtx.lineTo(freePath[i].x, freePath[i].y);
-        }
+        drawPathOnContext(maskCtx, freePath, false);
         maskCtx.stroke();
       }
 
       maskCtx.restore();
     }
 
+    function renderDepthLayer() {
+      depthCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+      depthCtx.save();
+      depthCtx.lineCap = "round";
+      depthCtx.lineJoin = "round";
+
+      const drawDepthItem = (pts, width, kind) => {
+        if (!pts || pts.length < 2) return;
+        depthCtx.lineWidth = width;
+        depthCtx.strokeStyle = kind === "out" ? "#f97316" : "#38bdf8";
+        drawPathOnContext(depthCtx, pts, false);
+        depthCtx.stroke();
+      };
+
+      for (const st of depthStrokes) {
+        drawDepthItem(st.points, st.width, st.kind);
+      }
+      if (depthEnabled && activeDepthPoints.length > 1) {
+        drawDepthItem(activeDepthPoints, Math.max(8, brushSize * 1.1), depthKind);
+      }
+      depthCtx.restore();
+    }
+
     function renderOverlayHandles() {
       overlayCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
-      const showHandles = toolMode === "polyline" || toolMode === "smart_line" || toolMode === "edit_points";
+      const showHandles = !depthEnabled && (toolMode === "polyline" || toolMode === "smart_line" || toolMode === "edit_points");
       if (!showHandles) return;
 
       const nodeRadius = Math.max(10, 14 / Math.sqrt(scale));
 
-      // Nodi delle linee già create
       vectorShapes.forEach((shape, sIdx) => {
         const isSelected = sIdx === selectedShapeIdx;
         shape.points.forEach((pt, pIdx) => {
@@ -1063,21 +1390,13 @@
           overlayCtx.lineWidth = 4;
           overlayCtx.strokeStyle = "#e11d48";
           overlayCtx.stroke();
-
-          if (toolMode === "edit_points" && pIdx === 0) {
-            overlayCtx.beginPath();
-            overlayCtx.arc(pt.x, pt.y, nodeRadius * 0.35, 0, Math.PI * 2);
-            overlayCtx.fillStyle = "#e11d48";
-            overlayCtx.fill();
-          }
         });
       });
 
-      // Nodi della polilinea attiva in corso
-      activePolylinePoints.forEach((pt) => {
+      activePolylinePoints.forEach((pt, idx) => {
         overlayCtx.beginPath();
-        overlayCtx.arc(pt.x, pt.y, nodeRadius, 0, Math.PI * 2);
-        overlayCtx.fillStyle = "#10b981";
+        overlayCtx.arc(pt.x, pt.y, idx === 0 && activePolylinePoints.length >= 3 ? nodeRadius * 1.25 : nodeRadius, 0, Math.PI * 2);
+        overlayCtx.fillStyle = idx === 0 && activePolylinePoints.length >= 3 ? "#facc15" : "#10b981";
         overlayCtx.fill();
         overlayCtx.lineWidth = 3.5;
         overlayCtx.strokeStyle = "#090a0d";
@@ -1087,23 +1406,57 @@
 
     function renderAll() {
       renderMaskLayer();
+      renderDepthLayer();
       renderOverlayHandles();
     }
 
-    function syncRasterSnapshot() {
-      const img = new Image();
-      img.onload = () => {
-        rasterSnapshot = img;
-        vectorShapes = [];
-        activePolylinePoints = [];
-        selectedShapeIdx = null;
-        renderAll();
-      };
-      img.src = maskCanvas.toDataURL();
+    function updateLoupe(canvasX, canvasY, show) {
+      if (!show || !loupeToggle.checked) {
+        loupeBox.classList.remove("active");
+        return;
+      }
+      loupeBox.classList.add("active");
+      const srcSize = 150;
+      loupeCtx.clearRect(0, 0, loupeCanvas.width, loupeCanvas.height);
+      loupeCtx.drawImage(
+        baseCanvas,
+        canvasX - srcSize / 2,
+        canvasY - srcSize / 2,
+        srcSize,
+        srcSize,
+        0,
+        0,
+        loupeCanvas.width,
+        loupeCanvas.height
+      );
+      loupeCtx.globalAlpha = 0.55;
+      loupeCtx.drawImage(
+        maskCanvas,
+        canvasX - srcSize / 2,
+        canvasY - srcSize / 2,
+        srcSize,
+        srcSize,
+        0,
+        0,
+        loupeCanvas.width,
+        loupeCanvas.height
+      );
+      loupeCtx.drawImage(
+        depthCanvas,
+        canvasX - srcSize / 2,
+        canvasY - srcSize / 2,
+        srcSize,
+        srcSize,
+        0,
+        0,
+        loupeCanvas.width,
+        loupeCanvas.height
+      );
+      loupeCtx.globalAlpha = 1;
     }
 
     function findHitNode(x, y) {
-      const hitDist = Math.max(24, 30 / Math.sqrt(scale));
+      const hitDist = Math.max(24, 32 / Math.sqrt(scale));
       for (let sIdx = vectorShapes.length - 1; sIdx >= 0; sIdx--) {
         const pts = vectorShapes[sIdx].points;
         for (let pIdx = 0; pIdx < pts.length; pIdx++) {
@@ -1162,6 +1515,7 @@
           drawPlaceholderTemplate(labelText, triedPaths);
           vectorShapes = [];
           activePolylinePoints = [];
+          depthStrokes = [];
           rasterSnapshot = null;
           undoStack = [];
           renderAll();
@@ -1182,8 +1536,9 @@
           vectorShapes = [];
           activePolylinePoints = [];
           selectedShapeIdx = null;
+          depthStrokes = [];
           rasterSnapshot = null;
-          undoStack = [{ shapes: [], raster: null }];
+          undoStack = [{ shapes: [], depth: [], raster: null }];
           renderAll();
           resetZoom();
         };
@@ -1212,7 +1567,15 @@
     }
 
     function handlePointerDown(x, y, isDoubleTap = false) {
-      // Prima controlla se l'utente sta afferrando un nodo esistente in edit_points o con punto vicino
+      updateLoupe(x, y, true);
+
+      if (depthEnabled) {
+        isDrawingFree = true;
+        activeDepthPoints = [{ x, y }];
+        renderAll();
+        return;
+      }
+
       if (toolMode === "edit_points") {
         const hit = findHitNode(x, y);
         if (hit) {
@@ -1223,17 +1586,28 @@
           brushSize = Math.min(60, Math.max(3, newW));
           brushSizeInput.value = brushSize;
           brushSizeVal.textContent = `${brushSize}px`;
+          vibrateTap(10);
           renderAll();
         }
         return;
       }
 
       if (toolMode === "polyline") {
+        // Se clicchi vicino al primo punto (con almeno 3 nodi), chiude e riempie il poligono
+        if (activePolylinePoints.length >= 3) {
+          const first = activePolylinePoints[0];
+          const closeDist = Math.max(26, 34 / Math.sqrt(scale));
+          if (Math.hypot(first.x - x, first.y - y) <= closeDist) {
+            commitActivePolyline(true);
+            return;
+          }
+        }
         if (isDoubleTap && activePolylinePoints.length >= 2) {
           commitActivePolyline(false);
           return;
         }
         activePolylinePoints.push({ x, y });
+        vibrateTap(8);
         renderAll();
         return;
       }
@@ -1246,7 +1620,6 @@
       }
 
       if (toolMode === "eraser") {
-        // Unisce eventuali forme vettoriali nel raster per poterle cancellare con la gomma
         pushUndoState();
         renderMaskLayer();
         const snap = new Image();
@@ -1288,6 +1661,10 @@
     }
 
     function handlePointerMove(x, y) {
+      if (isDrawingFree || draggedNode) {
+        updateLoupe(x, y, true);
+      }
+
       if (draggedNode) {
         vectorShapes[draggedNode.shapeIdx].points[draggedNode.pointIdx] = { x, y };
         renderAll();
@@ -1295,6 +1672,12 @@
       }
 
       if (!isDrawingFree) return;
+
+      if (depthEnabled) {
+        activeDepthPoints.push({ x, y });
+        renderAll();
+        return;
+      }
 
       if (toolMode === "eraser") {
         const prev = freePath[freePath.length - 1];
@@ -1308,6 +1691,8 @@
     }
 
     function handlePointerUp() {
+      updateLoupe(0, 0, false);
+
       if (draggedNode) {
         draggedNode = null;
         renderAll();
@@ -1317,6 +1702,20 @@
       if (!isDrawingFree) return;
       isDrawingFree = false;
 
+      if (depthEnabled) {
+        if (activeDepthPoints.length >= 2) {
+          pushUndoState();
+          depthStrokes.push({
+            points: activeDepthPoints.slice(),
+            width: Math.max(8, brushSize * 1.1),
+            kind: depthKind
+          });
+        }
+        activeDepthPoints = [];
+        renderAll();
+        return;
+      }
+
       if (toolMode === "smart_line" && freePath.length >= 2) {
         pushUndoState();
         const start = freePath[0];
@@ -1325,10 +1724,11 @@
         vectorShapes.push({
           points: pts,
           width: brushSize * 2.2,
-          closed: false
+          fillClosed: false
         });
         selectedShapeIdx = vectorShapes.length - 1;
         freePath = [];
+        vibrateTap(12);
         renderAll();
         return;
       }
@@ -1350,12 +1750,12 @@
       renderAll();
     }
 
-    // Touch events
     wrapper.addEventListener("touchstart", (e) => {
       e.preventDefault();
       if (e.touches.length === 2) {
         isDrawingFree = false;
         draggedNode = null;
+        updateLoupe(0, 0, false);
         isPinching = true;
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
@@ -1407,7 +1807,6 @@
       if (e.touches.length === 0) handlePointerUp();
     });
 
-    // Mouse events
     wrapper.addEventListener("contextmenu", (e) => e.preventDefault());
 
     wrapper.addEventListener("mousedown", (e) => {
@@ -1423,7 +1822,7 @@
     });
 
     wrapper.addEventListener("dblclick", (e) => {
-      if (toolMode === "polyline" && activePolylinePoints.length >= 2) {
+      if (!depthEnabled && toolMode === "polyline" && activePolylinePoints.length >= 2) {
         e.preventDefault();
         commitActivePolyline(false);
       }
@@ -1468,6 +1867,7 @@
       if (!undoStack.length) return;
       const prev = undoStack.pop();
       vectorShapes = JSON.parse(JSON.stringify(prev.shapes || []));
+      depthStrokes = JSON.parse(JSON.stringify(prev.depth || []));
       if (prev.raster) {
         const img = new Image();
         img.onload = () => {
@@ -1496,7 +1896,6 @@
       brushSize = Number(e.target.value);
       brushSizeVal.textContent = `${brushSize}px`;
 
-      // Aggiorna in tempo reale lo spessore della linea selezionata o dell'ultima creata
       const targetIdx = selectedShapeIdx !== null && vectorShapes[selectedShapeIdx]
         ? selectedShapeIdx
         : (vectorShapes.length > 0 ? vectorShapes.length - 1 : null);
@@ -1515,16 +1914,29 @@
       });
     });
 
-    document.querySelectorAll(".tag-chip").forEach((chip) => {
+    // Tag componenti e finiture/materiali
+    document.querySelectorAll(".tag-chip:not(.mat-chip)").forEach((chip) => {
       chip.addEventListener("click", () => {
         const current = promptInput.value.trim();
         promptInput.value = current ? `${current}, ${chip.dataset.text}` : chip.dataset.text;
       });
     });
 
+    document.querySelectorAll(".mat-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        document.querySelectorAll(".mat-chip").forEach(c => c.classList.remove("selected-mat"));
+        chip.classList.add("selected-mat");
+        const matText = chip.dataset.mat;
+        const baseText = promptInput.value.trim();
+        if (!baseText.includes(matText)) {
+          promptInput.value = baseText ? `${baseText}, ${matText}` : matText;
+        }
+      });
+    });
+
     function exportBinaryMask() {
       if (activePolylinePoints.length >= 2) {
-        commitActivePolyline(false);
+        commitActivePolyline(activePolylinePoints.length >= 3);
       }
       renderMaskLayer();
 
@@ -1553,6 +1965,52 @@
       return { dataUrl: exportCanvas.toDataURL("image/png"), hasPaintedPixels };
     }
 
+    function exportDepthGuideImage() {
+      renderDepthLayer();
+      const exp = document.createElement("canvas");
+      exp.width = INTERNAL_W;
+      exp.height = INTERNAL_H;
+      const ctx = exp.getContext("2d");
+      ctx.fillStyle = "#090a0d";
+      ctx.fillRect(0, 0, INTERNAL_W, INTERNAL_H);
+      ctx.drawImage(depthCanvas, 0, 0);
+      return {
+        dataUrl: exp.toDataURL("image/png"),
+        hasDepth: depthStrokes.length > 0
+      };
+    }
+
+    // Confronto Prima / Dopo
+    const compareStage = document.getElementById("compareStage");
+    const compareBeforeImg = document.getElementById("compareBeforeImg");
+    const compareAfterImg = document.getElementById("compareAfterImg");
+    const compareAfterWrap = document.getElementById("compareAfterWrap");
+    const compareDivider = document.getElementById("compareDivider");
+    const compareHandle = document.getElementById("compareHandle");
+    let isScrubbingCompare = false;
+
+    function setCompareSplit(clientX) {
+      const rect = compareStage.getBoundingClientRect();
+      const pct = Math.min(98, Math.max(2, ((clientX - rect.left) / rect.width) * 100));
+      compareAfterWrap.style.width = `${pct}%`;
+      compareDivider.style.left = `${pct}%`;
+      compareHandle.style.left = `${pct}%`;
+      compareAfterImg.style.width = `${10000 / pct}%`;
+    }
+
+    compareStage.addEventListener("pointerdown", (e) => {
+      isScrubbingCompare = true;
+      compareStage.setPointerCapture(e.pointerId);
+      setCompareSplit(e.clientX);
+    });
+    compareStage.addEventListener("pointermove", (e) => {
+      if (!isScrubbingCompare) return;
+      setCompareSplit(e.clientX);
+    });
+    compareStage.addEventListener("pointerup", () => {
+      isScrubbingCompare = false;
+    });
+
     generateBtn.addEventListener("click", async () => {
       errorBanner.style.display = "none";
 
@@ -1576,6 +2034,7 @@
         return;
       }
 
+      const { dataUrl: depthGuideImage, hasDepth } = exportDepthGuideImage();
       const baseImage = baseCanvas.toDataURL("image/jpeg", 0.92);
 
       generateBtn.disabled = true;
@@ -1588,6 +2047,8 @@
           body: JSON.stringify({
             baseImage,
             maskImage,
+            depthGuideImage: hasDepth ? depthGuideImage : null,
+            hasDepth,
             prompt: promptText,
             viewName: currentViewLabel
           })
@@ -1608,9 +2069,12 @@
         tokens -= 1;
         document.getElementById("tokenCount").textContent = tokens;
 
+        compareBeforeImg.src = baseImage;
+        compareAfterImg.src = data.image;
         generatedResultImg.src = data.image;
         downloadRenderLink.href = data.image;
         resultBox.style.display = "block";
+        setCompareSplit(compareStage.getBoundingClientRect().left + compareStage.getBoundingClientRect().width * 0.5);
         resultBox.scrollIntoView({ behavior: "smooth" });
       } catch (err) {
         errorBanner.textContent = err.message;
@@ -1630,6 +2094,7 @@
         vectorShapes = [];
         activePolylinePoints = [];
         selectedShapeIdx = null;
+        depthStrokes = [];
         rasterSnapshot = null;
         undoStack = [];
         renderAll();
