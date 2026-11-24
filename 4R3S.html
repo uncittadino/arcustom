@@ -623,4 +623,644 @@
 
     <div class="step-label">
       <span>Area di Progettazione e Maschera</span>
-      <button id="resetZoomBtn" style="background:
+      <button id="resetZoomBtn" style="background:none;border:none;color:#fda4af;font-size:0.78rem;font-weight:700;cursor:pointer;">Ripristina Vista</button>
+    </div>
+
+    <div class="canvas-wrapper" id="canvasWrapper">
+      <div id="viewport">
+        <canvas id="baseCanvas"></canvas>
+        <canvas id="maskCanvas"></canvas>
+      </div>
+      <div class="zoom-indicator" id="zoomBadge">Zoom: 1.0x</div>
+    </div>
+    <div class="hint-bar">2 dita: zoom (fino a 6x) e spostamento libero • 1 dito: traccia o cancella la maschera</div>
+
+    <div class="toolbar">
+      <div class="tool-row">
+        <button class="tool-btn active" id="brushBtn">Pennello</button>
+        <button class="tool-btn" id="eraserBtn">Gomma</button>
+        <button class="tool-btn" id="undoBtn">Annulla</button>
+        <button class="tool-btn" id="clearBtn">Pulisci</button>
+      </div>
+      <div class="slider-row">
+        <span>Spessore tratto:</span>
+        <input type="range" id="brushSize" min="3" max="60" value="18" />
+        <span id="brushSizeVal">18px</span>
+      </div>
+    </div>
+
+    <div class="step-label">
+      <span>Specifiche Estetiche del Componente</span>
+    </div>
+    <div class="prompt-box">
+      <div class="tags">
+        <span class="tag-chip" data-text="splitter anteriore basso in fibra di carbonio con profili laterali">+ Splitter Carbonio</span>
+        <span class="tag-chip" data-text="minigonne laterali profilate nero lucido ad alta precisione">+ Minigonne</span>
+        <span class="tag-chip" data-text="estrattore posteriore sportivo con canali aerodinamici">+ Estrattore</span>
+        <span class="tag-chip" data-text="spoiler posteriore lip integrato in carbonio">+ Spoiler Lip</span>
+      </div>
+      <textarea id="promptInput" placeholder="Descrivi stile, materiali e proporzioni del componente da generare nell'area evidenziata..."></textarea>
+      <button class="btn-primary" id="generateBtn">Genera Proposta (1 Token)</button>
+      <div class="error-banner" id="errorBanner"></div>
+    </div>
+
+    <div class="result-box" id="resultBox">
+      <h3>Proposta Generata — Alfa Romeo Giulia</h3>
+      <img id="generatedResultImg" alt="Render Body Kit AI" />
+      <div class="result-actions">
+        <a id="downloadRenderLink" class="btn-download" download="4R3S-Giulia-Concept.png">Scarica Render</a>
+        <button class="btn-primary" id="useAsBaseBtn" style="padding:11px;font-size:0.85rem;">Continua su questa vista</button>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal-backdrop" id="guideModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Guida Tecnica all'Utilizzo — 4R3S</h2>
+        <button class="close-btn" data-close="guideModal">&times;</button>
+      </div>
+      <ul class="guide-list">
+        <li>
+          <strong>1. Ingrandimento e posizionamento libero</strong>
+          Ingrandisci fino a 6x sulle zone della Giulia e sposta l'immagine con due dita (o rotella + tasto destro/Shift su PC).
+        </li>
+        <li>
+          <strong>2. Tracciamento della maschera</strong>
+          Usa Pennello, Gomma, Annulla o Pulisci per delimitare la zona del body kit.
+        </li>
+        <li>
+          <strong>3. Sistema a Token</strong>
+          Ogni generazione consuma 1 Token (3 gratuiti iniziali, poi pacchetti token).
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="tokensModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Acquista Pacchetti Token</h2>
+        <button class="close-btn" data-close="tokensModal">&times;</button>
+      </div>
+      <div class="pack-grid">
+        <div class="pack-card">
+          <h3>Pacchetto 15 Token</h3>
+          <div class="pack-price">4,99 €</div>
+          <button class="btn-primary buy-pack-btn" data-tokens="15">Seleziona 15 Token</button>
+        </div>
+        <div class="pack-card">
+          <h3>Pacchetto 40 Token</h3>
+          <div class="pack-price">9,99 €</div>
+          <button class="btn-primary buy-pack-btn" data-tokens="40">Seleziona 40 Token</button>
+        </div>
+      </div>
+      <div class="status-msg" id="tokenPurchaseMsg"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="authModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Registrati o Accedi al tuo Profilo</h2>
+        <button class="close-btn" data-close="authModal">&times;</button>
+      </div>
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="regNickname">Nickname / Nome Creatore</label>
+          <input type="text" id="regNickname" placeholder="Es. Marco_QV94" required />
+        </div>
+        <div class="form-group">
+          <label for="regEmail">Indirizzo Email</label>
+          <input type="email" id="regEmail" placeholder="nome@esempio.it" required />
+        </div>
+        <div class="form-group">
+          <label for="regPassword">Password (min. 8 caratteri)</label>
+          <input type="password" id="regPassword" minlength="8" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn-primary">Crea Account e Attiva 3 Token</button>
+        <div class="status-msg" id="authStatus"></div>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <strong>4R3S — Regolamento Generale e Condizioni del Sito</strong>
+        <span>Piattaforma indipendente dedicata al concept design automobilistico.</span>
+      </div>
+      <div class="rules-grid">
+        <div class="rule-item">
+          <h3>1. Indipendenza e Marchi</h3>
+          <p>4R3S è un progetto indipendente e non è affiliato, sponsorizzato o approvato da Stellantis N.V. o Alfa Romeo.</p>
+        </div>
+        <div class="rule-item">
+          <h3>2. Regole del Contest e Votazioni</h3>
+          <p>Ogni proposta inviata è soggetta a verifica preliminare. È vietato l'autovoto o l'uso di account multipli.</p>
+        </div>
+        <div class="rule-item">
+          <h3>3. Diritti sui Design e Uso Stradale</h3>
+          <p>I componenti aftermarket eventualmente realizzati sono destinati a uso pista, raduni o esposizione.</p>
+        </div>
+        <div class="rule-item">
+          <h3>4. Token, Privacy e Cookie</h3>
+          <p>Il servizio funziona tramite token gratuiti iniziali e acquisto di pacchetti token non rimborsabili una volta consumati.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; <span id="yearNow">2026</span> 4R3S. Tutti i diritti riservati.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("yearNow").textContent = new Date().getFullYear();
+
+    const GIULIA_VIEWS = {
+      front_angle: ["front-angle.jpg", "front-angle.JPG", "front-angle.jpeg", "front-angle.png"],
+      rear_angle: ["rear-angle.jpg", "rear-angle.JPG", "rear-angle.jpeg", "rear-angle.png"],
+      rear_high: ["rear-high.jpg", "rear-high.JPG", "rear-high.jpeg", "rear-high.png"],
+      side: ["side.jpg", "side.JPG", "side.jpeg", "side.png"]
+    };
+
+    const wrapper = document.getElementById("canvasWrapper");
+    const viewport = document.getElementById("viewport");
+    const baseCanvas = document.getElementById("baseCanvas");
+    const maskCanvas = document.getElementById("maskCanvas");
+    const baseCtx = baseCanvas.getContext("2d");
+    const maskCtx = maskCanvas.getContext("2d");
+
+    const zoomBadge = document.getElementById("zoomBadge");
+    const brushBtn = document.getElementById("brushBtn");
+    const eraserBtn = document.getElementById("eraserBtn");
+    const undoBtn = document.getElementById("undoBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const resetZoomBtn = document.getElementById("resetZoomBtn");
+    const brushSizeInput = document.getElementById("brushSize");
+    const brushSizeVal = document.getElementById("brushSizeVal");
+    const promptInput = document.getElementById("promptInput");
+    const generateBtn = document.getElementById("generateBtn");
+    const errorBanner = document.getElementById("errorBanner");
+    const resultBox = document.getElementById("resultBox");
+    const generatedResultImg = document.getElementById("generatedResultImg");
+    const downloadRenderLink = document.getElementById("downloadRenderLink");
+
+    const INTERNAL_W = 1600;
+    const INTERNAL_H = 1000;
+    baseCanvas.width = INTERNAL_W;
+    baseCanvas.height = INTERNAL_H;
+    maskCanvas.width = INTERNAL_W;
+    maskCanvas.height = INTERNAL_H;
+
+    let currentViewLabel = "Fronte Angolare Anteriore";
+    let mode = "brush";
+    let brushSize = 18;
+    let isDrawing = false;
+    let isPanningMouse = false;
+    let lastMousePan = { x: 0, y: 0 };
+    let historyStack = [];
+    let tokens = 3;
+
+    let scale = 1;
+    let translateX = 0;
+    let translateY = 0;
+    let isPinching = false;
+    let initialPinchDist = 0;
+    let initialScale = 1;
+    let lastPanCenter = { x: 0, y: 0 };
+
+    function openModal(id) {
+      document.getElementById(id).classList.add("open");
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("open");
+    }
+
+    document.getElementById("openGuideBtn").addEventListener("click", () => openModal("guideModal"));
+    document.getElementById("openAuthBtn").addEventListener("click", () => openModal("authModal"));
+    document.getElementById("openTokensBtn").addEventListener("click", () => {
+      document.getElementById("tokenPurchaseMsg").style.display = "none";
+      openModal("tokensModal");
+    });
+
+    document.querySelectorAll("[data-close]").forEach((btn) => {
+      btn.addEventListener("click", () => closeModal(btn.dataset.close));
+    });
+
+    document.querySelectorAll(".modal-backdrop").forEach((backdrop) => {
+      backdrop.addEventListener("click", (e) => {
+        if (e.target === backdrop) backdrop.classList.remove("open");
+      });
+    });
+
+    document.querySelectorAll(".buy-pack-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const added = Number(btn.dataset.tokens);
+        tokens += added;
+        document.getElementById("tokenCount").textContent = tokens;
+        const msg = document.getElementById("tokenPurchaseMsg");
+        msg.style.display = "block";
+        msg.textContent = `+${added} token aggiunti (saldo: ${tokens}).`;
+      });
+    });
+
+    document.getElementById("registerForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const nick = document.getElementById("regNickname").value.trim();
+      document.getElementById("openAuthBtn").textContent = nick;
+      const status = document.getElementById("authStatus");
+      status.style.display = "block";
+      status.textContent = `Profilo "${nick}" attivato.`;
+    });
+
+    function updateTransform() {
+      const rect = wrapper.getBoundingClientRect();
+      const maxTx = 0;
+      const minTx = Math.min(0, rect.width - rect.width * scale);
+      const maxTy = 0;
+      const minTy = Math.min(0, rect.height - rect.height * scale);
+
+      translateX = Math.min(maxTx, Math.max(minTx, translateX));
+      translateY = Math.min(maxTy, Math.max(minTy, translateY));
+
+      viewport.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      zoomBadge.textContent = `Zoom: ${scale.toFixed(1)}x`;
+    }
+
+    function saveHistory() {
+      if (historyStack.length > 20) historyStack.shift();
+      historyStack.push(maskCanvas.toDataURL());
+    }
+
+    function drawPlaceholderTemplate(label, triedPaths) {
+      baseCtx.fillStyle = "#111622";
+      baseCtx.fillRect(0, 0, INTERNAL_W, INTERNAL_H);
+      baseCtx.strokeStyle = "#263045";
+      baseCtx.lineWidth = 3;
+      baseCtx.strokeRect(40, 40, INTERNAL_W - 80, INTERNAL_H - 80);
+
+      baseCtx.fillStyle = "#f5f7fa";
+      baseCtx.font = "700 38px sans-serif";
+      baseCtx.textAlign = "center";
+      baseCtx.fillText(`4R3S — Vista: ${label}`, INTERNAL_W / 2, INTERNAL_H / 2 - 45);
+
+      baseCtx.fillStyle = "#fda4af";
+      baseCtx.font = "600 24px sans-serif";
+      baseCtx.fillText("Immagine non trovata su questo URL. Controlla la cartella 'immagini' su GitHub:", INTERNAL_W / 2, INTERNAL_H / 2 + 10);
+
+      baseCtx.fillStyle = "#9aa3b2";
+      baseCtx.font = "500 20px monospace";
+      baseCtx.fillText(triedPaths.join("  |  "), INTERNAL_W / 2, INTERNAL_H / 2 + 52);
+    }
+
+    function loadGiuliaView(key, labelText) {
+      currentViewLabel = labelText;
+      errorBanner.style.display = "none";
+      const candidates = GIULIA_VIEWS[key] || [];
+      const triedPaths = candidates.map((f) => `./immagini/${f}`);
+
+      function tryNext(idx) {
+        if (idx >= triedPaths.length) {
+          drawPlaceholderTemplate(labelText, triedPaths);
+          maskCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+          historyStack = [];
+          saveHistory();
+          resetZoom();
+          return;
+        }
+
+        const img = new Image();
+        img.onload = () => {
+          baseCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+          const ratio = Math.max(INTERNAL_W / img.width, INTERNAL_H / img.height);
+          const w = img.width * ratio;
+          const h = img.height * ratio;
+          const x = (INTERNAL_W - w) / 2;
+          const y = (INTERNAL_H - h) / 2;
+          baseCtx.drawImage(img, x, y, w, h);
+
+          maskCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+          historyStack = [];
+          saveHistory();
+          resetZoom();
+        };
+        img.onerror = () => tryNext(idx + 1);
+        img.src = triedPaths[idx];
+      }
+
+      tryNext(0);
+    }
+
+    function resetZoom() {
+      scale = 1;
+      translateX = 0;
+      translateY = 0;
+      updateTransform();
+    }
+
+    function getCanvasCoords(clientX, clientY) {
+      const rect = wrapper.getBoundingClientRect();
+      const relX = (clientX - rect.left - translateX) / scale;
+      const relY = (clientY - rect.top - translateY) / scale;
+      return {
+        x: (relX / rect.width) * INTERNAL_W,
+        y: (relY / rect.height) * INTERNAL_H
+      };
+    }
+
+    function startStroke(x, y) {
+      isDrawing = true;
+      maskCtx.lineCap = "round";
+      maskCtx.lineJoin = "round";
+      maskCtx.lineWidth = (brushSize * 2.2) / Math.sqrt(scale);
+
+      if (mode === "brush") {
+        maskCtx.globalCompositeOperation = "source-over";
+        maskCtx.strokeStyle = "#ff0055";
+      } else {
+        maskCtx.globalCompositeOperation = "destination-out";
+        maskCtx.strokeStyle = "rgba(0,0,0,1)";
+      }
+
+      maskCtx.beginPath();
+      maskCtx.moveTo(x, y);
+      maskCtx.lineTo(x + 0.1, y + 0.1);
+      maskCtx.stroke();
+    }
+
+    function moveStroke(x, y) {
+      if (!isDrawing) return;
+      maskCtx.lineTo(x, y);
+      maskCtx.stroke();
+    }
+
+    function endStroke() {
+      if (!isDrawing) return;
+      isDrawing = false;
+      maskCtx.closePath();
+      saveHistory();
+    }
+
+    wrapper.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      if (e.touches.length === 2) {
+        isDrawing = false;
+        isPinching = true;
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialPinchDist = Math.hypot(dx, dy);
+        initialScale = scale;
+        lastPanCenter = {
+          x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+          y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+        };
+      } else if (e.touches.length === 1 && !isPinching) {
+        const pos = getCanvasCoords(e.touches[0].clientX, e.touches[0].clientY);
+        startStroke(pos.x, pos.y);
+      }
+    }, { passive: false });
+
+    wrapper.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      if (e.touches.length === 2 && isPinching) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        const newScale = Math.min(6, Math.max(1, initialScale * (dist / initialPinchDist)));
+
+        const center = {
+          x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+          y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+        };
+
+        const rect = wrapper.getBoundingClientRect();
+        const originX = center.x - rect.left;
+        const originY = center.y - rect.top;
+
+        translateX = originX - ((originX - translateX) * (newScale / scale)) + (center.x - lastPanCenter.x);
+        translateY = originY - ((originY - translateY) * (newScale / scale)) + (center.y - lastPanCenter.y);
+        scale = newScale;
+        lastPanCenter = center;
+        updateTransform();
+      } else if (e.touches.length === 1 && isDrawing && !isPinching) {
+        const pos = getCanvasCoords(e.touches[0].clientX, e.touches[0].clientY);
+        moveStroke(pos.x, pos.y);
+      }
+    }, { passive: false });
+
+    wrapper.addEventListener("touchend", (e) => {
+      if (e.touches.length < 2) isPinching = false;
+      if (e.touches.length === 0) endStroke();
+    });
+
+    wrapper.addEventListener("contextmenu", (e) => e.preventDefault());
+
+    wrapper.addEventListener("mousedown", (e) => {
+      if (e.button === 1 || e.button === 2 || e.shiftKey) {
+        isPanningMouse = true;
+        lastMousePan = { x: e.clientX, y: e.clientY };
+        return;
+      }
+      if (e.button === 0) {
+        const pos = getCanvasCoords(e.clientX, e.clientY);
+        startStroke(pos.x, pos.y);
+      }
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      if (isPanningMouse) {
+        translateX += e.clientX - lastMousePan.x;
+        translateY += e.clientY - lastMousePan.y;
+        lastMousePan = { x: e.clientX, y: e.clientY };
+        updateTransform();
+        return;
+      }
+      if (!isDrawing) return;
+      const pos = getCanvasCoords(e.clientX, e.clientY);
+      moveStroke(pos.x, pos.y);
+    });
+
+    window.addEventListener("mouseup", () => {
+      isPanningMouse = false;
+      endStroke();
+    });
+
+    wrapper.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const rect = wrapper.getBoundingClientRect();
+      const originX = e.clientX - rect.left;
+      const originY = e.clientY - rect.top;
+      const factor = e.deltaY < 0 ? 1.18 : 0.84;
+      const newScale = Math.min(6, Math.max(1, scale * factor));
+      translateX = originX - ((originX - translateX) * (newScale / scale));
+      translateY = originY - ((originY - translateY) * (newScale / scale));
+      scale = newScale;
+      updateTransform();
+    }, { passive: false });
+
+    brushBtn.addEventListener("click", () => {
+      mode = "brush";
+      brushBtn.classList.add("active");
+      eraserBtn.classList.remove("active");
+    });
+
+    eraserBtn.addEventListener("click", () => {
+      mode = "eraser";
+      eraserBtn.classList.add("active");
+      brushBtn.classList.remove("active");
+    });
+
+    undoBtn.addEventListener("click", () => {
+      if (historyStack.length <= 1) return;
+      historyStack.pop();
+      const prev = new Image();
+      prev.onload = () => {
+        maskCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+        maskCtx.globalCompositeOperation = "source-over";
+        maskCtx.drawImage(prev, 0, 0);
+      };
+      prev.src = historyStack[historyStack.length - 1];
+    });
+
+    clearBtn.addEventListener("click", () => {
+      maskCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+      saveHistory();
+    });
+
+    resetZoomBtn.addEventListener("click", resetZoom);
+
+    brushSizeInput.addEventListener("input", (e) => {
+      brushSize = Number(e.target.value);
+      brushSizeVal.textContent = `${brushSize}px`;
+    });
+
+    document.querySelectorAll(".view-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".view-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        loadGiuliaView(btn.dataset.view, btn.textContent.trim());
+      });
+    });
+
+    document.querySelectorAll(".tag-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const current = promptInput.value.trim();
+        promptInput.value = current ? `${current}, ${chip.dataset.text}` : chip.dataset.text;
+      });
+    });
+
+    function exportBinaryMask() {
+      const exportCanvas = document.createElement("canvas");
+      exportCanvas.width = INTERNAL_W;
+      exportCanvas.height = INTERNAL_H;
+      const ctx = exportCanvas.getContext("2d");
+
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, INTERNAL_W, INTERNAL_H);
+
+      const srcData = maskCtx.getImageData(0, 0, INTERNAL_W, INTERNAL_H);
+      const outData = ctx.getImageData(0, 0, INTERNAL_W, INTERNAL_H);
+      let hasPaintedPixels = false;
+
+      for (let i = 0; i < srcData.data.length; i += 4) {
+        if (srcData.data[i + 3] > 20) {
+          hasPaintedPixels = true;
+          outData.data[i] = 255;
+          outData.data[i + 1] = 255;
+          outData.data[i + 2] = 255;
+          outData.data[i + 3] = 255;
+        }
+      }
+      ctx.putImageData(outData, 0, 0);
+      return { dataUrl: exportCanvas.toDataURL("image/png"), hasPaintedPixels };
+    }
+
+    generateBtn.addEventListener("click", async () => {
+      errorBanner.style.display = "none";
+
+      if (tokens <= 0) {
+        document.getElementById("tokenPurchaseMsg").style.display = "none";
+        openModal("tokensModal");
+        return;
+      }
+
+      const promptText = promptInput.value.trim();
+      if (!promptText) {
+        errorBanner.textContent = "Inserisci o seleziona una descrizione del componente prima di generare.";
+        errorBanner.style.display = "block";
+        return;
+      }
+
+      const { dataUrl: maskImage, hasPaintedPixels } = exportBinaryMask();
+      if (!hasPaintedPixels) {
+        errorBanner.textContent = "Evidenzia con il pennello la zona della carrozzeria in cui vuoi applicare il body kit.";
+        errorBanner.style.display = "block";
+        return;
+      }
+
+      const baseImage = baseCanvas.toDataURL("image/jpeg", 0.92);
+
+      generateBtn.disabled = true;
+      generateBtn.textContent = "Generazione AI in corso...";
+
+      try {
+        const res = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            baseImage,
+            maskImage,
+            prompt: promptText,
+            viewName: currentViewLabel
+          })
+        });
+
+        const rawText = await res.text();
+        let data = {};
+        try {
+          data = JSON.parse(rawText);
+        } catch {
+          throw new Error("Risposta non JSON dal server (se stai aprendo da GitHub Pages, la generazione AI richiede il deploy su Vercel).");
+        }
+
+        if (!res.ok) {
+          throw new Error(data.error || "Errore durante la generazione.");
+        }
+
+        tokens -= 1;
+        document.getElementById("tokenCount").textContent = tokens;
+
+        generatedResultImg.src = data.image;
+        downloadRenderLink.href = data.image;
+        resultBox.style.display = "block";
+        resultBox.scrollIntoView({ behavior: "smooth" });
+      } catch (err) {
+        errorBanner.textContent = err.message;
+        errorBanner.style.display = "block";
+      } finally {
+        generateBtn.disabled = false;
+        generateBtn.textContent = "Genera Proposta (1 Token)";
+      }
+    });
+
+    document.getElementById("useAsBaseBtn").addEventListener("click", () => {
+      if (!generatedResultImg.src) return;
+      const img = new Image();
+      img.onload = () => {
+        baseCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+        baseCtx.drawImage(img, 0, 0, INTERNAL_W, INTERNAL_H);
+        maskCtx.clearRect(0, 0, INTERNAL_W, INTERNAL_H);
+        historyStack = [];
+        saveHistory();
+        resetZoom();
+        wrapper.scrollIntoView({ behavior: "smooth" });
+      };
+      img.src = generatedResultImg.src;
+    });
+
+    loadGiuliaView("front_angle", "Fronte Angolare Anteriore");
+  </script>
+</body>
+</html>
